@@ -44,10 +44,10 @@
             android:layout_marginBottom="8dp" />
 
         <Button
-            android:id="@+id/update_export_users_button"
+            android:id="@+id/export_users_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Update and Export Users (Pagination)"
+            android:text="Export Users"
             android:backgroundTint="@color/mainblue"
             android:textColor="@android:color/white"
             android:layout_marginBottom="8dp" />
@@ -93,10 +93,10 @@
             android:layout_marginBottom="8dp" />
 
         <Button
-            android:id="@+id/update_export_commands_button"
+            android:id="@+id/export_commands_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Update and Export Commands (Pagination)"
+            android:text="Export Commands"
             android:backgroundTint="@color/mainblue"
             android:textColor="@android:color/white"
             android:layout_marginBottom="8dp" />

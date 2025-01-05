@@ -20,8 +20,9 @@ import java.util.Arrays;
 public class PopupHandler {
 
     private final Context context;
-    private final TableLayout mainTable; // Use the TableLayout reference
+    private final TableLayout mainTable;
     private final ArrayList<String> products;
+    private boolean isPopupActive = false;
 
     public PopupHandler(Context context, TableLayout mainTable) {
         this.context = context;
@@ -31,12 +32,13 @@ public class PopupHandler {
 
     public void setupPlusButton(ImageButton plusButton) {
         plusButton.setOnClickListener(view -> {
+            if (isPopupActive) return; // Prevent overlapping popups
+
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View popupView = inflater.inflate(R.layout.popup, null);
 
             // Get screen dimensions
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            ((MainActivity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             int screenWidth = displayMetrics.widthPixels;
             int screenHeight = displayMetrics.heightPixels;
 
@@ -46,6 +48,8 @@ public class PopupHandler {
                     screenHeight * 11 / 16,
                     true
             );
+
+            isPopupActive = true;
 
             Spinner spinner1 = popupView.findViewById(R.id.spinner1);
             EditText numberInput = popupView.findViewById(R.id.numberInput);
@@ -93,21 +97,21 @@ public class PopupHandler {
 
             closePopupButton.setOnClickListener(v -> popupWindow.dismiss());
 
-            popupWindow.showAtLocation(((MainActivity) context).findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
+            popupWindow.setOnDismissListener(() -> isPopupActive = false);
+
+            popupWindow.showAtLocation(((AdminAPI) context).findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
         });
     }
 
     private void addProductToTable(String product, int amount, String unit) {
-        // Check if the product already exists in the table
         boolean productExists = false;
 
-        for (int i = 1; i < mainTable.getChildCount(); i++) { // Skip header row
+        for (int i = 1; i < mainTable.getChildCount(); i++) {
             TableRow row = (TableRow) mainTable.getChildAt(i);
-            TextView productCell = (TextView) row.getChildAt(0); // First column
-            TextView amountCell = (TextView) row.getChildAt(1); // Second column
+            TextView productCell = (TextView) row.getChildAt(0);
+            TextView amountCell = (TextView) row.getChildAt(1);
 
             if (productCell.getText().toString().equals(product)) {
-                // Update the existing amount
                 String[] amountParts = amountCell.getText().toString().split(" ");
                 int currentAmount = Integer.parseInt(amountParts[0]);
                 int newAmount = currentAmount + amount;
@@ -118,7 +122,6 @@ public class PopupHandler {
         }
 
         if (!productExists) {
-            // Add a new row for the product
             TableRow newRow = new TableRow(context);
 
             TextView productCell = new TextView(context);

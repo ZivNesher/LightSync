@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 public class LoginHandler {
@@ -26,14 +28,21 @@ public class LoginHandler {
             String username = usernameInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
 
-            if (username.equals("Admin") && password.equals("Admin")) {
+            if (username.equals("Admin") && password.equals("Nimda")) {
                 Toast.makeText(context, "Admin login successful", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, AdminAPI.class);
                 context.startActivity(intent);
             } else {
                 // Regular user flow
                 ((MainActivity) context).setContentView(R.layout.activity_main);
-                new PopupHandler(context).setupMainActivity();
+
+                // Initialize TableLayout and Plus Button
+                TableLayout mainTable = ((MainActivity) context).findViewById(R.id.main_table);
+                ImageButton plusButton = ((MainActivity) context).findViewById(R.id.plus_button);
+
+                // Initialize PopupHandler and setup the Plus Button
+                PopupHandler popupHandler = new PopupHandler(context, mainTable);
+                popupHandler.setupPlusButton(plusButton);
             }
         });
 

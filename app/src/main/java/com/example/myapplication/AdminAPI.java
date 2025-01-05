@@ -48,7 +48,15 @@ public class AdminAPI extends AppCompatActivity {
         });
 
         // Navigation: End-User Screen
-        endUserScreenButton.setOnClickListener(v -> navigateToLogin());
+        endUserScreenButton.setOnClickListener(v -> {
+            // Navigate to the End-User UI
+            setContentView(R.layout.activity_main);
+
+            // Initialize the End-User UI handler and setup the UI
+            EndUserUIHandler endUserUIHandler = new EndUserUIHandler(this);
+            endUserUIHandler.setupEndUserUI();
+        });
+
 
         // Navigation: Operator Screen
         operatorScreenButton.setOnClickListener(v -> navigateToLogin());

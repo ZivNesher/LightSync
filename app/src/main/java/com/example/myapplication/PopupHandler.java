@@ -20,19 +20,16 @@ import java.util.Arrays;
 public class PopupHandler {
 
     private final Context context;
-    private TableLayout mainTable;
+    private final TableLayout mainTable; // Use the TableLayout reference
     private final ArrayList<String> products;
 
-    public PopupHandler(Context context) {
+    public PopupHandler(Context context, TableLayout mainTable) {
         this.context = context;
+        this.mainTable = mainTable;
         this.products = new ArrayList<>(Arrays.asList("Milk", "Eggs", "Cheese", "Bread", "Butter"));
     }
 
-    public void setupMainActivity() {
-        ImageButton plusButton = ((MainActivity) context).findViewById(R.id.plus_button);
-        mainTable = ((MainActivity) context).findViewById(R.id.main_table);
-
-        // Set OnClickListener for the plus button
+    public void setupPlusButton(ImageButton plusButton) {
         plusButton.setOnClickListener(view -> {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View popupView = inflater.inflate(R.layout.popup, null);
@@ -78,12 +75,61 @@ public class PopupHandler {
             });
 
             saveToTableButton.setOnClickListener(v -> {
-                // Save product to table logic
+                String product = spinner1.getSelectedItem().toString();
+                String unit = spinner2.getSelectedItem().toString();
+                int amount;
+
+                try {
+                    amount = Integer.parseInt(numberInput.getText().toString());
+                } catch (NumberFormatException e) {
+                    numberInput.setError("Please enter a valid number");
+                    return;
+                }
+
+                // Add product to the table
+                addProductToTable(product, amount, unit);
+                popupWindow.dismiss();
             });
 
             closePopupButton.setOnClickListener(v -> popupWindow.dismiss());
 
             popupWindow.showAtLocation(((MainActivity) context).findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
         });
+    }
+
+    private void addProductToTable(String product, int amount, String unit) {
+        // Check if the product already exists in the table
+        boolean productExists = false;
+
+        for (int i = 1; i < mainTable.getChildCount(); i++) { // Skip header row
+            TableRow row = (TableRow) mainTable.getChildAt(i);
+            TextView productCell = (TextView) row.getChildAt(0); // First column
+            TextView amountCell = (TextView) row.getChildAt(1); // Second column
+
+            if (productCell.getText().toString().equals(product)) {
+                // Update the existing amount
+                String[] amountParts = amountCell.getText().toString().split(" ");
+                int currentAmount = Integer.parseInt(amountParts[0]);
+                int newAmount = currentAmount + amount;
+                amountCell.setText(newAmount + " " + unit);
+                productExists = true;
+                break;
+            }
+        }
+
+        if (!productExists) {
+            // Add a new row for the product
+            TableRow newRow = new TableRow(context);
+
+            TextView productCell = new TextView(context);
+            productCell.setText(product);
+            newRow.addView(productCell);
+
+            TextView amountCell = new TextView(context);
+            amountCell.setText(amount + " " + unit);
+            newRow.addView(amountCell);
+
+            mainTable.addView(newRow);
+        }
     }
 }

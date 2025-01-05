@@ -13,20 +13,21 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- Logo -->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:src="@drawable/logo_no_background1"></ImageView>
+            android:src="@drawable/logo_no_background1" />
 
         <LinearLayout
             android:id="@+id/Main_workflow"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9"
             android:orientation="vertical">
-
             <TableLayout
+                android:id="@+id/main_table"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="7"
@@ -35,77 +36,20 @@
                 android:background="@drawable/rounded_table_background"
                 android:layout_margin="8dp">
 
+                <!-- Header Row -->
                 <TableRow android:background="@color/mainblue">
                     <TextView
-                        android:text="Column 1"
+                        android:text="Product"
                         android:padding="8dp"
                         android:textStyle="bold"
                         android:gravity="center"
-                        android:textColor="@color/mint"
-
-                        />
+                        android:textColor="@color/mint" />
                     <TextView
-                        android:text="Column 2"
+                        android:text="Amount"
                         android:padding="8dp"
                         android:textStyle="bold"
-                        android:gravity="center"
-                        android:textColor="@color/mint"/>
+                        android:textColor="@color/mint" />
                 </TableRow>
-                <TableRow>
-                    <TextView
-                        android:text="Row 1, Col 1"
-                        android:padding="8dp"
-                        android:gravity="left" />
-                    <TextView
-                        android:text="Row 1, Col 2"
-                        android:padding="8dp"
-                        android:gravity="right" />
-                </TableRow>
-
-                <TableRow>
-                    <TextView
-                        android:text="Row 2, Col 1"
-                        android:padding="8dp"
-                        android:gravity="left" />
-                    <TextView
-                        android:text="Row 2, Col 2"
-                        android:padding="8dp"
-                        android:gravity="right" />
-                </TableRow>
-
-                <TableRow>
-                    <TextView
-                        android:text="Row 3, Col 1"
-                        android:padding="8dp"
-                        android:gravity="left" />
-                    <TextView
-                        android:text="Row 3, Col 2"
-                        android:padding="8dp"
-                        android:gravity="right" />
-                </TableRow>
-
-                <TableRow>
-                    <TextView
-                        android:text="Row 4, Col 1"
-                        android:padding="8dp"
-                        android:gravity="left" />
-                    <TextView
-                        android:text="Row 4, Col 2"
-                        android:padding="8dp"
-                        android:gravity="right" />
-                </TableRow>
-
-                <TableRow>
-                    <TextView
-                        android:text="Row 5, Col 1"
-                        android:padding="8dp"
-                        android:gravity="left" />
-                    <TextView
-                        android:text="Row 5, Col 2"
-                        android:padding="8dp"
-                        android:gravity="right" />
-                </TableRow>
-
             </TableLayout>
 
             <LinearLayout
@@ -113,10 +57,12 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
+
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="4"></com.google.android.material.textview.MaterialTextView>
+                    android:layout_weight="4" />
+
                 <ImageButton
                     android:id="@+id/plus_button"
                     android:layout_width="0dp"
@@ -125,12 +71,9 @@
                     android:src="@drawable/plus_icon"
                     android:background="@color/mint"
                     android:scaleType="centerInside"
-                    android:layout_margin="4dp">
-                </ImageButton>
+                    android:layout_margin="4dp" />
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

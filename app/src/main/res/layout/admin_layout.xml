@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mint"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header Section -->
+        <TextView
+            android:id="@+id/admin_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Admin Panel"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- User Management Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Management"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/delete_all_users_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete All Users"
+            android:backgroundTint="#FF5252"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/update_export_users_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update and Export Users (Pagination)"
+            android:backgroundTint="@color/mainblue"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Object Management Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Object Management"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/delete_all_objects_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete All Objects"
+            android:backgroundTint="#FF5252"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Command Management Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Command Management"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/delete_all_commands_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete All Commands"
+            android:backgroundTint="#FF5252"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/update_export_commands_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update and Export Commands (Pagination)"
+            android:backgroundTint="@color/mainblue"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Navigation Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Navigation"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/end_user_screen_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show End-User Screen"
+            android:backgroundTint="@color/mainblue"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/operator_screen_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Operator Screen"
+            android:backgroundTint="@color/mainblue"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp" />
+
+    </LinearLayout>
+</ScrollView>

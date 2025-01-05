@@ -17,9 +17,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity {
 
     private TableLayout mainTable;
+    private ArrayList<String> products; // Make product list a class-level variable
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +32,55 @@ public class MainActivity extends AppCompatActivity {
         // Set the initial loading screen layout
         setContentView(R.layout.loading_screen);
 
-        // Delay for 3 seconds before switching to the main layout
+        // Initialize the product list once
+        products = new ArrayList<>(Arrays.asList("Milk", "Eggs", "Cheese", "Bread", "Butter"));
+
+        // Delay for 3 seconds before switching to the login screen
         new Handler().postDelayed(() -> {
-            // Set the main activity layout
+            // Set the login screen layout
+            setContentView(R.layout.login_screen);
+
+            // Initialize the login screen logic
+            setupLoginScreen();
+        }, 3000); // 3 seconds delay
+    }
+
+    private void setupLoginScreen() {
+        // Find the Login and Sign Up buttons
+        Button loginButton = findViewById(R.id.login_button);
+        Button signUpButton = findViewById(R.id.signup_button);
+
+        // Set OnClickListener for the Login button
+        loginButton.setOnClickListener(v -> {
+            // Move to the main activity layout
             setContentView(R.layout.activity_main);
 
             // Initialize the rest of your main activity logic here
             setupMainActivity();
-        }, 3000); // 3 seconds delay
+        });
+
+        // Set OnClickListener for the Sign Up button
+        signUpButton.setOnClickListener(v -> {
+            // Move to the sign-up screen
+            setContentView(R.layout.sign_up_screen);
+
+            // Initialize the sign-up screen logic
+            setupSignUpScreen();
+        });
+    }
+
+    private void setupSignUpScreen() {
+        // Find the Back to Login button
+        Button backToLoginButton = findViewById(R.id.back_to_login_button);
+
+        // Set OnClickListener for the Back to Login button
+        backToLoginButton.setOnClickListener(v -> {
+            // Move back to the login screen
+            setContentView(R.layout.login_screen);
+
+            // Reinitialize the login screen logic
+            setupLoginScreen();
+        });
     }
 
     private void setupMainActivity() {
@@ -43,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton plusButton = findViewById(R.id.plus_button);
         mainTable = findViewById(R.id.main_table);
 
-        // Set OnClickListener for the button
+        // Set OnClickListener for the plus button
         plusButton.setOnClickListener(view -> {
             // Inflate the popup layout
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -58,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             // Create the PopupWindow with specific size
             PopupWindow popupWindow = new PopupWindow(
                     popupView,
-                    screenWidth*7/8,
+                    screenWidth * 7 / 8,
                     screenHeight * 11 / 16,
                     true // Focusable
             );
@@ -67,17 +112,31 @@ public class MainActivity extends AppCompatActivity {
             Spinner spinner1 = popupView.findViewById(R.id.spinner1);
             EditText numberInput = popupView.findViewById(R.id.numberInput);
             Spinner spinner2 = popupView.findViewById(R.id.spinner2);
+            EditText addProductInput = popupView.findViewById(R.id.add_product_input);
+            Button addProductButton = popupView.findViewById(R.id.add_product_button);
             Button saveToTableButton = popupView.findViewById(R.id.save_to_table_button);
             Button closePopupButton = popupView.findViewById(R.id.close_popup_button);
 
-            // Set up spinners
-            ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Milk", "Eggs", "Cheese", "Bread", "Butter"});
+            // Set up adapters using the class-level products list
+            ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, products);
             adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner1.setAdapter(adapter1);
 
             ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"ML", "Litter", "KG", "Gram"});
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner2.setAdapter(adapter2);
+
+            // Handle "Add Product" button click
+            addProductButton.setOnClickListener(v -> {
+                String newProduct = addProductInput.getText().toString().trim();
+                if (!newProduct.isEmpty() && !products.contains(newProduct)) {
+                    products.add(newProduct); // Add the new product to the list
+                    adapter1.notifyDataSetChanged(); // Update the adapter
+                    addProductInput.setText(""); // Clear the input field
+                } else {
+                    addProductInput.setError(newProduct.isEmpty() ? "Product name cannot be empty" : "Product already exists");
+                }
+            });
 
             // Handle "Save to Table" button click
             saveToTableButton.setOnClickListener(v -> {

@@ -8,6 +8,9 @@
     <color name="Amber">#ffb400</color>
     <color name="Lavender">#b7a9ff</color>
     <color name="Cyan">#00d4ff</color>
+    <color name="header_background">#E0E0E0</color>
+    <color name="row_background">#F8F8F8</color>
+    <color name="mainblue2">#3F51B5</color>
 
 
 </resources>

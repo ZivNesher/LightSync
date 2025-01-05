@@ -44,7 +44,7 @@
             android:layout_marginBottom="8dp" />
 
         <Button
-            android:id="@+id/export_users_button"
+            android:id="@+id/export_all_users_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Export Users"
@@ -93,7 +93,7 @@
             android:layout_marginBottom="8dp" />
 
         <Button
-            android:id="@+id/export_commands_button"
+            android:id="@+id/export_all_commands_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Export Commands"

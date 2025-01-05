@@ -19,25 +19,94 @@
             android:layout_weight="1"
             android:src="@drawable/logo_no_background1"></ImageView>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="1000dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.02"
-            android:background="@color/mainblue"
-            android:text="" />
-
         <LinearLayout
             android:id="@+id/Main_workflow"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="9"
             android:orientation="vertical">
-            <com.google.android.material.textview.MaterialTextView
+
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="7"
-                android:text="Here will be all the workflow steps"
-                ></com.google.android.material.textview.MaterialTextView>
+                android:stretchColumns="1"
+                android:padding="7dp"
+                android:background="@drawable/rounded_table_background"
+                android:layout_margin="8dp">
+
+                <TableRow android:background="@color/mainblue">
+                    <TextView
+                        android:text="Column 1"
+                        android:padding="8dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="@color/mint"
+
+                        />
+                    <TextView
+                        android:text="Column 2"
+                        android:padding="8dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textColor="@color/mint"/>
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:text="Row 1, Col 1"
+                        android:padding="8dp"
+                        android:gravity="left" />
+                    <TextView
+                        android:text="Row 1, Col 2"
+                        android:padding="8dp"
+                        android:gravity="right" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:text="Row 2, Col 1"
+                        android:padding="8dp"
+                        android:gravity="left" />
+                    <TextView
+                        android:text="Row 2, Col 2"
+                        android:padding="8dp"
+                        android:gravity="right" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:text="Row 3, Col 1"
+                        android:padding="8dp"
+                        android:gravity="left" />
+                    <TextView
+                        android:text="Row 3, Col 2"
+                        android:padding="8dp"
+                        android:gravity="right" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:text="Row 4, Col 1"
+                        android:padding="8dp"
+                        android:gravity="left" />
+                    <TextView
+                        android:text="Row 4, Col 2"
+                        android:padding="8dp"
+                        android:gravity="right" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:text="Row 5, Col 1"
+                        android:padding="8dp"
+                        android:gravity="left" />
+                    <TextView
+                        android:text="Row 5, Col 2"
+                        android:padding="8dp"
+                        android:gravity="right" />
+                </TableRow>
+
+            </TableLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

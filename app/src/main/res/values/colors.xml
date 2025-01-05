@@ -4,4 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="mint">#e5faf7</color>
     <color name="mainblue">#242b80</color>
+    <color name="Coral">#ff6f61</color>
+    <color name="Amber">#ffb400</color>
+    <color name="Lavender">#b7a9ff</color>
+    <color name="Cyan">#00d4ff</color>
+
+
 </resources>

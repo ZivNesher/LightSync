@@ -7,9 +7,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_color"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo_color"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.MyApplication"
@@ -17,7 +17,7 @@
 
         <!-- LoginActivity is now the launch activity -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".activites.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,16 +27,16 @@
 
         <!-- MainActivity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".activites.MainActivity"
             android:exported="true" />
 
         <!-- Other Activities -->
         <activity
-            android:name=".AdminAPI"
+            android:name=".api.AdminAPI"
             android:exported="true" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".activites.ProfileActivity" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".activites.SignUpActivity"
             android:exported="true" />
 
 

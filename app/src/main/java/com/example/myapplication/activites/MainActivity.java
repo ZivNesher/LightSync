@@ -1,13 +1,15 @@
-package com.example.myapplication;
+package com.example.myapplication.activites;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.handlers.PopupHandler;
+import com.example.myapplication.R;
 
 public class MainActivity extends AppCompatActivity {
 

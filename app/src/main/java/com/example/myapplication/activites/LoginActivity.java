@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activites;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.api.AdminAPI;
+import com.example.myapplication.R;
 import com.example.myapplication.api.ApiService;
 import com.example.myapplication.models.UserBoundary;
 

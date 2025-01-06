@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.handlers;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,10 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import com.example.myapplication.api.AdminAPI;
+import com.example.myapplication.R;
+import com.example.myapplication.activites.MainActivity;
+import com.example.myapplication.activites.ProfileActivity;
 import com.example.myapplication.api.ApiService;
 import com.example.myapplication.models.UserBoundary;
 

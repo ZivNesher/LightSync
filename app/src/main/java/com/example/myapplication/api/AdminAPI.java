@@ -1,9 +1,8 @@
-package com.example.myapplication;
+package com.example.myapplication.api;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +16,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.api.AdminApiService;
-import com.example.myapplication.api.ApiClient;
+import com.example.myapplication.R;
 import com.example.myapplication.models.UserBoundary;
 import com.example.myapplication.models.CommandBoundary;
 

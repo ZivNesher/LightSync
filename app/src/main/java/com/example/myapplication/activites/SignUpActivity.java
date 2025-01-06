@@ -1,8 +1,11 @@
-package com.example.myapplication;
+package com.example.myapplication.activites;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.R;
+import com.example.myapplication.handlers.SignUpHandler;
 
 public class SignUpActivity extends AppCompatActivity {
 

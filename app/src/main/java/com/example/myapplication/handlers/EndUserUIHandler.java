@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.handlers;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -10,6 +10,9 @@ import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+
+import com.example.myapplication.api.AdminAPI;
+import com.example.myapplication.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

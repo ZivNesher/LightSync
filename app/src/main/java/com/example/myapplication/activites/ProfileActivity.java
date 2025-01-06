@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activites;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +8,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.R;
+import com.example.myapplication.handlers.UpdateHandler;
 
 public class ProfileActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.handlers;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,6 +6,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.myapplication.R;
+import com.example.myapplication.activites.SignUpActivity;
 import com.example.myapplication.api.ApiService;
 import com.example.myapplication.models.NewUserBoundary;
 import com.google.gson.Gson;

@@ -15,7 +15,7 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
 
-        <!-- MainActivity is the launcher activity -->
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -25,10 +25,12 @@
             </intent-filter>
         </activity>
 
-        <!-- AdminAPI Activity -->
+
         <activity
             android:name=".AdminAPI"
             android:exported="true" />
+        <activity android:name=".ProfileActivity" />
+
 
     </application>
 

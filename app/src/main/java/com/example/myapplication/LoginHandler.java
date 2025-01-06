@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -60,6 +61,10 @@ public class LoginHandler {
                     @Override
                     public void onResponse(Call<UserBoundary> call, Response<UserBoundary> response) {
                         if (response.isSuccessful() && response.body() != null) {
+                            // Save logged-in user data to SharedPreferences
+                            UserBoundary user = response.body();
+                            saveLoggedInUser(user);
+
                             // Login successful
                             Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show();
                             proceedToMainLayout();
@@ -94,6 +99,27 @@ public class LoginHandler {
         // Initialize PopupHandler and setup the Plus Button
         PopupHandler popupHandler = new PopupHandler(context, mainTable);
         popupHandler.setupPlusButton(plusButton);
+
+        // Initialize Profile Button
+        ImageButton profileButton = ((MainActivity) context).findViewById(R.id.profile_button);
+        if (profileButton != null) {
+            profileButton.setOnClickListener(v -> {
+                // Navigate to ProfileActivity
+                Intent intent = new Intent(context, ProfileActivity.class);
+                context.startActivity(intent);
+            });
+        } else {
+            Toast.makeText(context, "Profile button not found", Toast.LENGTH_SHORT).show();
+        }
     }
 
+    private void saveLoggedInUser(UserBoundary user) {
+        // Save user data to SharedPreferences
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("loggedInEmail", user.getUserId().getEmail());
+        editor.putString("loggedInUsername", user.getUsername());
+        editor.putString("loggedInAvatar", user.getAvatar());
+        editor.apply();
+    }
 }

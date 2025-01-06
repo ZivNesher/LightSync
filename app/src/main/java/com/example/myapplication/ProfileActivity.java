@@ -57,10 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Handle Back button click
         backButton.setOnClickListener(v -> {
-            // Navigate back to the main activity
+            // Navigate back to the MainActivity
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear any previous instance of MainActivity
             startActivity(intent);
-            finish(); // Finish the current activity
+            finish(); // Close ProfileActivity
         });
     }
 }

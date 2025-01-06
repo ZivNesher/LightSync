@@ -1,31 +1,46 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private LoginHandler loginHandler;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        // Set the initial loading screen layout
-        setContentView(R.layout.loading_screen);
+        // Retrieve user data from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String loggedInEmail = sharedPreferences.getString("loggedInEmail", null);
 
-        // Delay for 3 seconds before switching to the login screen
-        new Handler().postDelayed(() -> {
-            // Set the login screen layout
-            setContentView(R.layout.login_screen);
+        if (loggedInEmail == null) {
+            // If no user is logged in, navigate back to LoginActivity
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
-            // Initialize the login screen logic
-            loginHandler = new LoginHandler(this);
-            loginHandler.setupLoginScreen();
-        }, 3000); // 3 seconds delay
+        // Initialize TableLayout and Plus Button
+        TableLayout mainTable = findViewById(R.id.main_table);
+        ImageButton plusButton = findViewById(R.id.plus_button);
+
+        // Initialize PopupHandler and setup the Plus Button
+        PopupHandler popupHandler = new PopupHandler(this, mainTable);
+        popupHandler.setupPlusButton(plusButton);
+
+        // Initialize Profile Button
+        ImageButton profileButton = findViewById(R.id.profile_button);
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+        });
     }
 }

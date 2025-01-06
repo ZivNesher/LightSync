@@ -26,9 +26,9 @@ public class SignUpHandler {
 
     public void setupSignUpScreen() {
         // Find input fields and buttons
-        EditText emailInput = ((MainActivity) context).findViewById(R.id.email_input);
-        Button signUpButton = ((MainActivity) context).findViewById(R.id.sign_up_button);
-        Button backToLoginButton = ((MainActivity) context).findViewById(R.id.back_to_login_button);
+        EditText emailInput = ((SignUpActivity) context).findViewById(R.id.email_input);
+        Button signUpButton = ((SignUpActivity) context).findViewById(R.id.sign_up_button);
+        Button backToLoginButton = ((SignUpActivity) context).findViewById(R.id.back_to_login_button);
 
         // Retrofit setup
         Retrofit retrofit = new Retrofit.Builder()
@@ -64,8 +64,7 @@ public class SignUpHandler {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(context, "Sign-up successful!", Toast.LENGTH_SHORT).show();
-                        ((MainActivity) context).setContentView(R.layout.login_screen);
-                        new LoginHandler(context).setupLoginScreen();
+                        ((SignUpActivity) context).finish(); // Close SignUpActivity
                     } else {
                         try {
                             String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
@@ -88,8 +87,7 @@ public class SignUpHandler {
 
         // Set OnClickListener for the Back to Login button
         backToLoginButton.setOnClickListener(v -> {
-            ((MainActivity) context).setContentView(R.layout.login_screen);
-            new LoginHandler(context).setupLoginScreen();
+            ((SignUpActivity) context).finish(); // Close SignUpActivity and return to LoginActivity
         });
     }
 }

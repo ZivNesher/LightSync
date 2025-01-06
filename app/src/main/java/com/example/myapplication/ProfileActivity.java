@@ -47,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             // Validate email
             if (loggedInEmail != null && !updatedEmail.equalsIgnoreCase(loggedInEmail)) {
-                Toast.makeText(this, "Email does not match the logged-in email!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Email can't be changed!", Toast.LENGTH_SHORT).show();
                 return;
             }
 

@@ -32,7 +32,7 @@
                 android:id="@+id/profile_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@android:drawable/ic_menu_manage"
                 android:background="@android:color/transparent"
                 android:contentDescription="Profile Button"
                 android:padding="8dp" />

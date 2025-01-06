@@ -99,7 +99,13 @@ public class PopupHandler {
 
             popupWindow.setOnDismissListener(() -> isPopupActive = false);
 
-            popupWindow.showAtLocation(((AdminAPI) context).findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
+            if (context instanceof AdminAPI) {
+                popupWindow.showAtLocation(((AdminAPI) context).findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
+            } else if (context instanceof MainActivity) {
+                popupWindow.showAtLocation(((MainActivity) context).findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
+            } else {
+                throw new IllegalArgumentException("Context must be an instance of AdminAPI or MainActivity");
+            }
         });
     }
 

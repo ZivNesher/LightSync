@@ -28,10 +28,22 @@
         android:gravity="center_vertical">
 
         <EditText
-            android:id="@+id/name_input"
+            android:id="@+id/username_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Full Name"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            android:drawableLeft="@android:drawable/ic_menu_myplaces"
+            android:drawablePadding="10dp"
+            android:padding="12dp"
+            android:background="@drawable/rounded_edittext"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+        <EditText
+            android:id="@+id/avatar_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Avatar"
             android:inputType="textPersonName"
             android:drawableLeft="@android:drawable/ic_menu_myplaces"
             android:drawablePadding="10dp"

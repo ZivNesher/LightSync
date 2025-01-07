@@ -29,6 +29,8 @@ public class SignUpHandler {
     public void setupSignUpScreen() {
         // Find input fields and buttons
         EditText emailInput = ((SignUpActivity) context).findViewById(R.id.email_input);
+        EditText usernameInput = ((SignUpActivity) context).findViewById(R.id.username_input);
+        EditText avatarInput = ((SignUpActivity) context).findViewById(R.id.avatar_input);
         Button signUpButton = ((SignUpActivity) context).findViewById(R.id.sign_up_button);
         Button backToLoginButton = ((SignUpActivity) context).findViewById(R.id.back_to_login_button);
 
@@ -42,19 +44,21 @@ public class SignUpHandler {
         // Set OnClickListener for the Sign-Up button
         signUpButton.setOnClickListener(v -> {
             String email = emailInput.getText().toString().trim();
+            String username = usernameInput.getText().toString().trim();
+            String avatar = avatarInput.getText().toString().trim();
 
-            // Validate email input
-            if (email.isEmpty()) {
-                Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show();
+            // Validate input
+            if (email.isEmpty() || username.isEmpty() || avatar.isEmpty()) {
+                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Create the NewUserBoundary object for the request
             NewUserBoundary newUser = new NewUserBoundary();
-            newUser.setEmail(email); // Set the email
-            newUser.setRole("END_USER"); // Default role
-            newUser.setUsername("string"); // Default username
-            newUser.setAvatar("string"); // Default avatar
+            newUser.setEmail(email);
+            newUser.setRole("END_USER");
+            newUser.setUsername(username);
+            newUser.setAvatar(avatar);
 
             // Log the request payload
             Log.d("SignUpHandler", "Request Body: " + new Gson().toJson(newUser));

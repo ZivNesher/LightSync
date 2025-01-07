@@ -1,5 +1,6 @@
 package com.example.myapplication.api;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activites.LoginActivity;
 import com.example.myapplication.models.UserBoundary;
 import com.example.myapplication.models.CommandBoundary;
 
@@ -42,6 +44,7 @@ public class AdminAPI extends AppCompatActivity {
         Button deleteAllObjectsButton = findViewById(R.id.delete_all_objects_button);
         Button deleteAllCommandsButton = findViewById(R.id.delete_all_commands_button);
         Button exportAllCommandsButton = findViewById(R.id.export_all_commands_button);
+        Button quitButton = findViewById(R.id.back_to_login_button);
 
         // Set up button listeners
         deleteAllUsersButton.setOnClickListener(v -> showConfirmationPopup("Are you sure you want to delete all users?", this::deleteAllUsers));
@@ -49,7 +52,12 @@ public class AdminAPI extends AppCompatActivity {
         deleteAllObjectsButton.setOnClickListener(v -> showConfirmationPopup("Are you sure you want to delete all objects?", this::deleteAllObjects));
         deleteAllCommandsButton.setOnClickListener(v -> showConfirmationPopup("Are you sure you want to delete all commands?", this::deleteAllCommands));
         exportAllCommandsButton.setOnClickListener(v -> exportAllCommands());
-    }
+        quitButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminAPI.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });    }
 
     private void deleteAllUsers() {
         adminApiService.deleteAllUsers().enqueue(new Callback<Void>() {

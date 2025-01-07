@@ -7,7 +7,6 @@
     android:background="#E5FAF7"
     android:padding="24dp">
 
-    <!-- Profile Header -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +17,6 @@
         android:gravity="center"
         android:layout_marginBottom="24dp" />
 
-    <!-- Username Input -->
     <EditText
         android:id="@+id/profile_username"
         android:layout_width="match_parent"
@@ -32,7 +30,6 @@
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Email Input -->
     <EditText
         android:id="@+id/profile_email"
         android:layout_width="match_parent"
@@ -46,7 +43,6 @@
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Avatar Input -->
     <EditText
         android:id="@+id/profile_avatar"
         android:layout_width="match_parent"
@@ -60,7 +56,6 @@
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Update Profile Button -->
     <Button
         android:id="@+id/update_profile_button"
         android:layout_width="match_parent"
@@ -72,7 +67,6 @@
         android:layout_marginBottom="16dp"
         android:textStyle="bold" />
 
-    <!-- Back Button -->
     <Button
         android:id="@+id/back_button"
         android:layout_width="match_parent"
@@ -80,6 +74,16 @@
         android:text="Back"
         android:backgroundTint="#FF5252"
         android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:textStyle="bold" />
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:backgroundTint="@color/header_background"
+        android:textColor="@color/black"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
         android:textStyle="bold" />

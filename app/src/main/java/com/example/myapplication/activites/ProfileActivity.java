@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
+import com.example.myapplication.api.AdminAPI;
 import com.example.myapplication.handlers.UpdateHandler;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -30,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
         EditText avatarInput = findViewById(R.id.profile_avatar);
         Button updateButton = findViewById(R.id.update_profile_button);
         Button backButton = findViewById(R.id.back_button);
+        Button logoutButton = findViewById(R.id.logout_button);
 
         // Retrieve user data from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
@@ -58,13 +60,18 @@ public class ProfileActivity extends AppCompatActivity {
             updateHandler.updateUser(updatedEmail, updatedUsername, updatedAvatar);
         });
 
-        // Handle Back button click
         backButton.setOnClickListener(v -> {
-            // Navigate back to the MainActivity
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear any previous instance of MainActivity
             startActivity(intent);
-            finish(); // Close ProfileActivity
+            finish();
+        });
+
+        logoutButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 }

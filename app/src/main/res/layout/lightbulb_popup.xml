@@ -2,31 +2,50 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/mint">
 
+    <!-- Title -->
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Manage Lightbulbs"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textColor="@color/mainblue"
+        android:paddingBottom="12dp"
+        android:background="@color/mint"
+        />
 
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lightbulbRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:background="@color/mint"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 
+    <!-- Add Lightbulb Button -->
     <Button
         android:id="@+id/add_lightbulb_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Lightbulb" />
+        android:text="Add Lightbulb"
+        android:backgroundTint="@color/Amber"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp" />
 
+    <!-- Close Button -->
     <Button
         android:id="@+id/close_popup_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Close" />
+        android:text="Close"
+        android:backgroundTint="@color/Coral"
+        android:textColor="@android:color/white" />
 </LinearLayout>

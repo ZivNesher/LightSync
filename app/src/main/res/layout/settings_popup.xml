@@ -2,23 +2,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/popup_background">
 
     <SeekBar
         android:id="@+id/brightness_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="100" />
+        android:max="100"
+        android:progressDrawable="@drawable/seekbar_progress"
+        android:thumb="@drawable/seekbar_thumb"
+        android:padding="8dp" />
+
 
     <Button
         android:id="@+id/delete_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete Lightbulb" />
+        android:text="Delete Lightbulb"
+        android:backgroundTint="@color/Coral"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp" />
 
     <Button
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save" />
+        android:text="Save"
+        android:backgroundTint="@color/Amber"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp" />
 </LinearLayout>

@@ -1,148 +1,141 @@
 package com.example.myapplication.handlers;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.PopupWindow;
-import android.widget.Spinner;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
-import com.example.myapplication.api.AdminAPI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.myapplication.R;
-import com.example.myapplication.activites.MainActivity;
+import com.example.myapplication.adapters.LightbulbAdapter;
+import com.example.myapplication.models.Lightbulb;
+import com.example.myapplication.models.Room;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PopupHandler {
 
     private final Context context;
-    private final TableLayout mainTable;
-    private final ArrayList<String> products;
-    private boolean isPopupActive = false;
 
-    public PopupHandler(Context context, TableLayout mainTable) {
+    public PopupHandler(Context context) {
         this.context = context;
-        this.mainTable = mainTable;
-        this.products = new ArrayList<>(Arrays.asList("Milk", "Eggs", "Cheese", "Bread", "Butter"));
     }
 
-    public void setupPlusButton(ImageButton plusButton) {
-        plusButton.setOnClickListener(view -> {
-            if (isPopupActive) return; // Prevent overlapping popups
+    public void showRoomPopup(Room room) {
+        // Inflate the popup layout for lightbulbs
+        View popupView = LayoutInflater.from(context).inflate(R.layout.lightbulb_popup, null);
 
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View popupView = inflater.inflate(R.layout.popup, null);
+        // RecyclerView for lightbulbs
+        RecyclerView lightbulbRecyclerView = popupView.findViewById(R.id.lightbulbRecyclerView);
+        lightbulbRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            // Get screen dimensions
-            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            int screenWidth = displayMetrics.widthPixels;
-            int screenHeight = displayMetrics.heightPixels;
+        // Lightbulb data for the room
+        ArrayList<Lightbulb> lightbulbs = (ArrayList<Lightbulb>) room.getLightbulbs();
+        LightbulbAdapter adapter = new LightbulbAdapter(lightbulbs, context, this);
+        lightbulbRecyclerView.setAdapter(adapter);
 
+        // Add Lightbulb button
+        Button addLightbulbButton = popupView.findViewById(R.id.add_lightbulb_button);
+        addLightbulbButton.setOnClickListener(v -> showAddLightbulbPopup(lightbulbs, adapter));
+
+        // Close button
+        Button closeButton = popupView.findViewById(R.id.close_popup_button);
+        closeButton.setOnClickListener(v -> {
             PopupWindow popupWindow = new PopupWindow(
                     popupView,
-                    screenWidth * 7 / 8,
-                    screenHeight * 11 / 16,
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT,
                     true
             );
-
-            isPopupActive = true;
-
-            Spinner spinner1 = popupView.findViewById(R.id.spinner1);
-            EditText numberInput = popupView.findViewById(R.id.numberInput);
-            Spinner spinner2 = popupView.findViewById(R.id.spinner2);
-            EditText addProductInput = popupView.findViewById(R.id.add_product_input);
-            Button addProductButton = popupView.findViewById(R.id.add_product_button);
-            Button saveToTableButton = popupView.findViewById(R.id.save_to_table_button);
-            Button closePopupButton = popupView.findViewById(R.id.close_popup_button);
-
-            ArrayAdapter<String> adapter1 = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, products);
-            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner1.setAdapter(adapter1);
-
-            ArrayAdapter<String> adapter2 = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, new String[]{"ML", "Litter", "KG", "Gram"});
-            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner2.setAdapter(adapter2);
-
-            addProductButton.setOnClickListener(v -> {
-                String newProduct = addProductInput.getText().toString().trim();
-                if (!newProduct.isEmpty() && !products.contains(newProduct)) {
-                    products.add(newProduct);
-                    adapter1.notifyDataSetChanged();
-                    addProductInput.setText("");
-                } else {
-                    addProductInput.setError("Invalid or duplicate product");
-                }
-            });
-
-            saveToTableButton.setOnClickListener(v -> {
-                String product = spinner1.getSelectedItem().toString();
-                String unit = spinner2.getSelectedItem().toString();
-                int amount;
-
-                try {
-                    amount = Integer.parseInt(numberInput.getText().toString());
-                } catch (NumberFormatException e) {
-                    numberInput.setError("Please enter a valid number");
-                    return;
-                }
-
-                // Add product to the table
-                addProductToTable(product, amount, unit);
-                popupWindow.dismiss();
-            });
-
-            closePopupButton.setOnClickListener(v -> popupWindow.dismiss());
-
-            popupWindow.setOnDismissListener(() -> isPopupActive = false);
-
-            if (context instanceof AdminAPI) {
-                popupWindow.showAtLocation(((AdminAPI) context).findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
-            } else if (context instanceof MainActivity) {
-                popupWindow.showAtLocation(((MainActivity) context).findViewById(android.R.id.content), android.view.Gravity.CENTER, 0, 0);
-            } else {
-                throw new IllegalArgumentException("Context must be an instance of AdminAPI or MainActivity");
-            }
+            popupWindow.dismiss();
         });
+
+        // Show the popup
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setView(popupView)
+                .setCancelable(true);
+        builder.create().show();
     }
 
-    private void addProductToTable(String product, int amount, String unit) {
-        boolean productExists = false;
+    private void showAddLightbulbPopup(ArrayList<Lightbulb> lightbulbs, LightbulbAdapter adapter) {
+        // Inflate the popup layout for adding a lightbulb
+        View addPopupView = LayoutInflater.from(context).inflate(R.layout.add_lightbulb_popup, null);
+        EditText lightbulbNameEditText = addPopupView.findViewById(R.id.lightbulb_name_input);
+        Button addButton = addPopupView.findViewById(R.id.add_button);
+        Button cancelButton = addPopupView.findViewById(R.id.cancel_button);
 
-        for (int i = 1; i < mainTable.getChildCount(); i++) {
-            TableRow row = (TableRow) mainTable.getChildAt(i);
-            TextView productCell = (TextView) row.getChildAt(0);
-            TextView amountCell = (TextView) row.getChildAt(1);
+        // Create the dialog for the popup
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(addPopupView)
+                .setCancelable(false)
+                .create();
 
-            if (productCell.getText().toString().equals(product)) {
-                String[] amountParts = amountCell.getText().toString().split(" ");
-                int currentAmount = Integer.parseInt(amountParts[0]);
-                int newAmount = currentAmount + amount;
-                amountCell.setText(newAmount + " " + unit);
-                productExists = true;
-                break;
+        // Cancel button listener
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        // Add button listener
+        addButton.setOnClickListener(v -> {
+            String name = lightbulbNameEditText.getText().toString().trim();
+            if (name.isEmpty()) {
+                Toast.makeText(context, "Lightbulb name cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
             }
-        }
 
-        if (!productExists) {
-            TableRow newRow = new TableRow(context);
+            // Add the new lightbulb to the list and update the adapter
+            lightbulbs.add(new Lightbulb(name, false, 0));
+            adapter.notifyItemInserted(lightbulbs.size() - 1);
+            Toast.makeText(context, "Lightbulb added: " + name, Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
 
-            TextView productCell = new TextView(context);
-            productCell.setText(product);
-            newRow.addView(productCell);
+        dialog.show();
+    }
 
-            TextView amountCell = new TextView(context);
-            amountCell.setText(amount + " " + unit);
-            newRow.addView(amountCell);
+    public void showSettingsPopup(Lightbulb lightbulb, LightbulbAdapter adapter, int position) {
+        // Inflate the popup layout for settings
+        View settingsView = LayoutInflater.from(context).inflate(R.layout.settings_popup, null);
+        Button deleteButton = settingsView.findViewById(R.id.delete_button);
+        SeekBar brightnessSeekBar = settingsView.findViewById(R.id.brightness_seekbar);
+        Button saveButton = settingsView.findViewById(R.id.save_button);
 
-            mainTable.addView(newRow);
-        }
+        // Initialize SeekBar with current brightness
+        brightnessSeekBar.setProgress(lightbulb.getBrightness());
+        brightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                lightbulb.setBrightness(progress); // Update brightness dynamically
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        // Delete button listener
+        deleteButton.setOnClickListener(v -> {
+            adapter.getLightbulbs().remove(position);
+            adapter.notifyItemRemoved(position);
+            Toast.makeText(context, "Lightbulb deleted", Toast.LENGTH_SHORT).show();
+        });
+
+        // Save button listener
+        saveButton.setOnClickListener(v -> {
+            Toast.makeText(context, "Brightness saved: " + lightbulb.getBrightness(), Toast.LENGTH_SHORT).show();
+        });
+
+        // Show the settings popup
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setView(settingsView)
+                .setCancelable(true);
+        builder.create().show();
     }
 }

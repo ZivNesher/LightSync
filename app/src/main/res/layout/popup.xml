@@ -18,66 +18,24 @@
             android:id="@+id/popup_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Items to Table"
+            android:text="Light Management"
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
             android:textColor="@android:color/black"
             android:paddingBottom="8dp" />
 
-        <TableLayout
-            android:id="@+id/popup_table"
+        <!-- Lightbulb List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lightbulbRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="1,2,3,4"
-            android:background="#E5FAF7"
-            android:padding="8dp">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
 
-            <TableRow>
-                <Spinner
-                    android:id="@+id/spinner1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <EditText
-                    android:id="@+id/numberInput"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number" />
-
-                <Spinner
-                    android:id="@+id/spinner2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </TableRow>
-        </TableLayout>
-
-
-
-        <Button
-            android:id="@+id/save_to_table_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add to Table"
-            android:backgroundTint="#661C087F"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="8dp" />
-
-        <EditText
-            android:id="@+id/add_product_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter new product"
-            android:inputType="text"
-            android:layout_marginTop="8dp" />
-        <Button
-            android:id="@+id/add_product_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Product"
-            android:backgroundTint="#4CAF50"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="8dp" />
+        <!-- Close Button -->
         <Button
             android:id="@+id/close_popup_button"
             android:layout_width="match_parent"

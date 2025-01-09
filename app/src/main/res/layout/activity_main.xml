@@ -44,48 +44,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <TableLayout
-                android:id="@+id/main_table"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="7"
-                android:stretchColumns="1"
-                android:padding="7dp"
-                android:background="@drawable/rounded_table_background"
-                android:layout_margin="8dp">
 
-                <!-- Header Row -->
-                <TableRow android:background="@color/mainblue">
-                    <TextView
-                        android:text="Product"
-                        android:padding="8dp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:textColor="@color/mint" />
-                    <TextView
-                        android:text="Amount"
-                        android:padding="8dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/mint" />
-                </TableRow>
-            </TableLayout>
-
-            <LinearLayout
+            <!-- Room List RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/roomRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:padding="8dp"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4" />
+            <!-- Add Room Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="end">
 
                 <ImageButton
                     android:id="@+id/plus_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/plus_icon"
                     android:background="@color/mint"
                     android:scaleType="centerInside"

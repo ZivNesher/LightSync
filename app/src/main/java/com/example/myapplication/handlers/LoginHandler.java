@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.example.myapplication.api.AdminAPI;
@@ -95,14 +94,6 @@ public class LoginHandler {
 
     private void proceedToMainLayout() {
         ((MainActivity) context).setContentView(R.layout.activity_main);
-
-        // Initialize TableLayout and Plus Button
-        TableLayout mainTable = ((MainActivity) context).findViewById(R.id.main_table);
-        ImageButton plusButton = ((MainActivity) context).findViewById(R.id.plus_button);
-
-        // Initialize PopupHandler and setup the Plus Button
-        PopupHandler popupHandler = new PopupHandler(context, mainTable);
-        popupHandler.setupPlusButton(plusButton);
 
         // Initialize Profile Button
         ImageButton profileButton = ((MainActivity) context).findViewById(R.id.profile_button);

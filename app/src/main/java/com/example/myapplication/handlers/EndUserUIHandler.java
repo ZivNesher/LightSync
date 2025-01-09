@@ -9,9 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
-import android.widget.TableLayout;
 
-import com.example.myapplication.api.AdminAPI;
 import com.example.myapplication.R;
 
 import java.util.ArrayList;
@@ -27,10 +25,7 @@ public class EndUserUIHandler {
         this.products = new ArrayList<>(Arrays.asList("Milk", "Eggs", "Cheese", "Bread", "Butter"));
     }
 
-    public void setupEndUserUI() {
-        TableLayout mainTable = ((AdminAPI) context).findViewById(R.id.main_table);
-        ImageButton plusButton = ((AdminAPI) context).findViewById(R.id.plus_button);
-
+    public void setupEndUserUI(ImageButton plusButton) {
         // Setup Plus Button to show popup
         plusButton.setOnClickListener(view -> {
             // Inflate popup layout
@@ -38,8 +33,7 @@ public class EndUserUIHandler {
             View popupView = inflater.inflate(R.layout.popup, null);
 
             // Configure popup size
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            ((AdminAPI) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             int screenWidth = displayMetrics.widthPixels;
             int screenHeight = displayMetrics.heightPixels;
 
@@ -50,20 +44,8 @@ public class EndUserUIHandler {
                     true
             );
 
-            // Initialize popup components
-            Spinner spinner1 = popupView.findViewById(R.id.spinner1);
-            Spinner spinner2 = popupView.findViewById(R.id.spinner2);
-
-            ArrayAdapter<String> adapter1 = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, products);
-            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner1.setAdapter(adapter1);
-
-            ArrayAdapter<String> adapter2 = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, new String[]{"ML", "Litter", "KG", "Gram"});
-            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner2.setAdapter(adapter2);
-
             // Show popup
-            popupWindow.showAtLocation(((AdminAPI) context).findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
+            popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         });
     }
 }

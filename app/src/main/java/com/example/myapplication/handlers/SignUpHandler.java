@@ -36,7 +36,7 @@ public class SignUpHandler {
 
         // Retrofit setup
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8081") // Replace with your local server's base URL
+                .baseUrl("http://10.0.2.2:8081")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         ApiService apiService = retrofit.create(ApiService.class);

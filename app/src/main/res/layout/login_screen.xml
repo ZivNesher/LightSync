@@ -43,7 +43,7 @@
             android:id="@+id/password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/password"
+            android:hint="System Id"
             android:inputType="textPassword"
             android:background="@drawable/rounded_edittext"
             android:drawableStart="@android:drawable/ic_lock_idle_lock"

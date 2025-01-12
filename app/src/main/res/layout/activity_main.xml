@@ -46,6 +46,15 @@
             android:orientation="vertical">
 
             <!-- Room List RecyclerView -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.09"
+                android:text="Rooms List"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:gravity="left" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/roomRecyclerView"
                 android:layout_width="match_parent"

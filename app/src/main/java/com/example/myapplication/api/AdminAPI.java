@@ -112,6 +112,11 @@ public class AdminAPI extends AppCompatActivity {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         showMessagePopup("All users deleted successfully!");
+                        // Redirect to the login screen
+                        Intent intent = new Intent(AdminAPI.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish(); // Close the current activity
                     } else {
                         showMessagePopup("Failed to delete users. Status: " + response.code());
                     }
@@ -126,6 +131,7 @@ public class AdminAPI extends AppCompatActivity {
             showMessagePopup("Admin credentials not found. Please log in again.");
         }
     }
+
 
     private void exportAllUsers() {
         String systemID = getUserSystemID();

@@ -1,7 +1,10 @@
 package com.example.myapplication.models;
+
+import com.example.myapplication.data.RoleEnum;
+
 public class UserBoundary {
     private UserId userId;
-    private String role;
+    private RoleEnum role;
     private String username;
     private String avatar;
 
@@ -14,11 +17,11 @@ public class UserBoundary {
         this.userId = userId;
     }
 
-    public String getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 
@@ -38,17 +41,17 @@ public class UserBoundary {
         this.avatar = avatar;
     }
 
-    // Inner class for userId
+    // Updated inner class for userId
     public static class UserId {
-        private String systemId;
+        private String systemID; // Updated to match backend naming convention
         private String email;
 
-        public String getSystemId() {
-            return systemId;
+        public String getSystemID() {
+            return systemID;
         }
 
-        public void setSystemId(String systemId) {
-            this.systemId = systemId;
+        public void setSystemID(String systemID) {
+            this.systemID = systemID;
         }
 
         public String getEmail() {

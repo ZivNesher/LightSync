@@ -8,11 +8,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.myapplication.models.UserId;
+
 
 import com.example.myapplication.api.AdminAPI;
 import com.example.myapplication.R;
 import com.example.myapplication.api.ApiService;
-import com.example.myapplication.api.MockApiService;
+import com.example.myapplication.data.RoleEnum;
 import com.example.myapplication.models.UserBoundary;
 
 import retrofit2.Call;
@@ -48,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+/*
             // Check for Admin login
             if (email.equals("Admin") && password.equals("Nimda")) {
                 Toast.makeText(this, "Admin login successful", Toast.LENGTH_SHORT).show();
@@ -56,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish(); // Close LoginActivity
                 return;
-            }
+            }*/
 
             // Validate credentials with the server
             Call<UserBoundary> call = apiService.loginUser(password, email);
@@ -69,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                         saveLoggedInUser(user);
 
                         // Check the user role and navigate accordingly
-                        if ("Admin".equalsIgnoreCase(user.getRole())) {
+                        if (RoleEnum.ADMIN.equals(user.getRole())) {
                             // Navigate to AdminActivity if the role is Admin
                             Intent intent = new Intent(LoginActivity.this, AdminAPI.class);
                             startActivity(intent);
@@ -99,13 +101,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveLoggedInUser(UserBoundary user) {
-        // Save user data to SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("loggedInEmail", user.getUserId().getEmail());
+        editor.putString("loggedInSystemID", user.getUserId().getSystemID());
         editor.putString("loggedInUsername", user.getUsername());
         editor.putString("loggedInAvatar", user.getAvatar());
-        editor.putString("loggedInSystemID", user.getUserId().getSystemId());
+        editor.putString("loggedInRole", user.getRole().name());
         editor.apply();
     }
 }

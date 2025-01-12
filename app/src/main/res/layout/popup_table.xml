@@ -6,31 +6,15 @@
     android:padding="16dp"
     android:background="@color/mint">
 
-    <!-- ScrollView for vertical scrolling -->
-    <ScrollView
+    <!-- RecyclerView for displaying the command bubbles -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp">
-
-        <!-- HorizontalScrollView for horizontal scrolling -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="horizontal">
-
-            <!-- TableLayout for the table -->
-            <TableLayout
-                android:id="@+id/tableLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:stretchColumns="*"
-                android:shrinkColumns="*"
-                android:background="@color/white"
-                android:padding="8dp"
-                android:elevation="4dp" />
-        </HorizontalScrollView>
-    </ScrollView>
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 
     <!-- Close button -->
     <Button

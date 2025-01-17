@@ -43,6 +43,10 @@
             android:name=".activites.SignUpActivity"
             android:exported="true" />
         <activity android:name=".activites.RoleEditorActivity" />
+        <activity
+            android:name=".activites.EndUserActivity" />
+        <activity
+            android:name=".activites.OperatorActivity" />
 
 
     </application>

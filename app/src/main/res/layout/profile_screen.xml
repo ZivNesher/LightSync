@@ -57,6 +57,18 @@
         android:background="@drawable/rounded_edittext"
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
+    <EditText
+        android:id="@+id/profile_role"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Role"
+        android:inputType="textPersonName"
+        android:drawableLeft="@android:drawable/ic_media_play"
+        android:drawablePadding="10dp"
+        android:padding="12dp"
+        android:background="@drawable/rounded_edittext"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/update_profile_button"

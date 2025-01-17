@@ -10,8 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
-import com.example.myapplication.api.AdminAPI;
 import com.example.myapplication.handlers.UpdateHandler;
+import com.example.myapplication.data.RoleEnum;
+import com.example.myapplication.models.UserBoundary;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -29,6 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
         EditText usernameInput = findViewById(R.id.profile_username);
         EditText emailInput = findViewById(R.id.profile_email);
         EditText avatarInput = findViewById(R.id.profile_avatar);
+        EditText roleInput = findViewById(R.id.profile_role); // Role field
         Button updateButton = findViewById(R.id.update_profile_button);
         Button backButton = findViewById(R.id.back_button);
         Button logoutButton = findViewById(R.id.logout_button);
@@ -38,31 +40,39 @@ public class ProfileActivity extends AppCompatActivity {
         String loggedInEmail = sharedPreferences.getString("loggedInEmail", null);
         String loggedInUsername = sharedPreferences.getString("loggedInUsername", "");
         String loggedInAvatar = sharedPreferences.getString("loggedInAvatar", "");
+        String loggedInRole = sharedPreferences.getString("loggedInRole", RoleEnum.END_USER.name()); // Default role
 
         // Pre-fill the fields
         emailInput.setText(loggedInEmail != null ? loggedInEmail : "");
         usernameInput.setText(loggedInUsername);
         avatarInput.setText(loggedInAvatar);
+        roleInput.setText(loggedInRole);
+
+        // Make email non-editable
+        emailInput.setFocusable(false);
+        emailInput.setClickable(false);
 
         // Handle Update button click
         updateButton.setOnClickListener(v -> {
-            String updatedEmail = emailInput.getText().toString().trim();
             String updatedUsername = usernameInput.getText().toString().trim();
             String updatedAvatar = avatarInput.getText().toString().trim();
+            String updatedRoleString = roleInput.getText().toString().trim();
 
-            // Validate email
-            if (loggedInEmail != null && !updatedEmail.equalsIgnoreCase(loggedInEmail)) {
-                Toast.makeText(this, "Email can't be changed!", Toast.LENGTH_SHORT).show();
+            RoleEnum updatedRole;
+            try {
+                updatedRole = RoleEnum.valueOf(updatedRoleString.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(this, "Invalid role. Use ADMIN, END_USER, or OPERATOR.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Use UpdateHandler to update user details
-            updateHandler.updateUser(updatedEmail, updatedUsername, updatedAvatar);
+            updateHandler.updateUser(loggedInEmail, updatedUsername, updatedAvatar, updatedRole);
         });
+
 
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear any previous instance of MainActivity
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         });

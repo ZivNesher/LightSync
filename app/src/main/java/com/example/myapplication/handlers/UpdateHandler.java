@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.myapplication.api.ApiService;
+import com.example.myapplication.data.RoleEnum;
 import com.example.myapplication.models.UserBoundary;
 
 import retrofit2.Call;
@@ -28,7 +29,7 @@ public class UpdateHandler {
         this.apiService = retrofit.create(ApiService.class);
     }
 
-    public void updateUser(String email, String username, String avatar) {
+    public void updateUser(String email, String username, String avatar, RoleEnum role) {
         // Validate input
         if (email == null || email.trim().isEmpty()) {
             Toast.makeText(context, "Email is required to update the profile", Toast.LENGTH_SHORT).show();
@@ -39,7 +40,7 @@ public class UpdateHandler {
         UserBoundary updateUser = new UserBoundary();
         updateUser.setUsername(username == null || username.trim().isEmpty() ? null : username); // Null if no change
         updateUser.setAvatar(avatar == null || avatar.trim().isEmpty() ? null : avatar); // Null if no change
-        updateUser.setRole(null);
+        updateUser.setRole(role); // Include role
 
         // Extract the system ID (use a constant or config)
         String systemId = "2025a.integrative.nagar.yuval";

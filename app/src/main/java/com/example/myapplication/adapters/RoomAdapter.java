@@ -36,12 +36,13 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         Room room = rooms.get(position);
         holder.roomNameTextView.setText(room.getName());
 
-        // Click functionality (if needed, e.g., show room details or manage settings)
+        // Open lightbulb management popup on room click
         holder.itemView.setOnClickListener(v -> {
             PopupHandler popupHandler = new PopupHandler(context);
-            popupHandler.showRoomPopup(room); // This displays the room details via a popup
+            popupHandler.showRoomPopup(room);
         });
     }
+
 
     @Override
     public int getItemCount() {

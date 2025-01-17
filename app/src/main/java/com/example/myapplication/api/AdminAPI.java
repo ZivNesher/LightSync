@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TableLayout;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activites.LoginActivity;
+import com.example.myapplication.activites.ProfileActivity;
 import com.example.myapplication.adapters.CommandAdapter;
 import com.example.myapplication.adapters.UserAdapter;
 import com.example.myapplication.models.UserBoundary;
@@ -58,9 +60,6 @@ public class AdminAPI extends AppCompatActivity {
             return;
         }
 
-        // Initialize Retrofit service
-        adminApiService = ApiClient.getRetrofitInstance().create(AdminApiService.class);
-
         // Initialize buttons
         Button deleteAllUsersButton = findViewById(R.id.delete_all_users_button);
         Button exportAllUsersButton = findViewById(R.id.export_all_users_button);
@@ -68,6 +67,7 @@ public class AdminAPI extends AppCompatActivity {
         Button deleteAllCommandsButton = findViewById(R.id.delete_all_commands_button);
         Button exportAllCommandsButton = findViewById(R.id.export_all_commands_button);
         Button quitButton = findViewById(R.id.back_to_login_button);
+        ImageButton profileButton = findViewById(R.id.profile_button); // Find the profile button
 
         // Set up button listeners
         deleteAllUsersButton.setOnClickListener(v -> showConfirmationPopup("Are you sure you want to delete all users?", this::deleteAllUsers));
@@ -81,7 +81,14 @@ public class AdminAPI extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        // Navigate to ProfileActivity when profile button is clicked
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminAPI.this, ProfileActivity.class);
+            startActivity(intent);
+        });
     }
+
 
 
     private String getUserSystemID() {

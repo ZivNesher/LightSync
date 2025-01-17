@@ -14,6 +14,14 @@
         android:thumb="@drawable/seekbar_thumb"
         android:padding="8dp" />
 
+    <Button
+        android:id="@+id/color_picker_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Change Color"
+        android:backgroundTint="@color/mainblue"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp" />
 
     <Button
         android:id="@+id/delete_button"

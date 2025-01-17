@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Toast;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -93,7 +94,7 @@ public class PopupHandler {
             }
 
             // Add the new lightbulb to the list and update the adapter
-            lightbulbs.add(new Lightbulb(name, false, 0));
+            lightbulbs.add(new Lightbulb(name, false, 0 , 122222));
             adapter.notifyItemInserted(lightbulbs.size() - 1);
             Toast.makeText(context, "Lightbulb added: " + name, Toast.LENGTH_SHORT).show();
             dialog.dismiss();
@@ -103,18 +104,19 @@ public class PopupHandler {
     }
 
     public void showSettingsPopup(Lightbulb lightbulb, LightbulbAdapter adapter, int position, boolean isOperator) {
-        // Inflate the popup layout for settings
         View settingsView = LayoutInflater.from(context).inflate(R.layout.settings_popup, null);
-        Button deleteButton = settingsView.findViewById(R.id.delete_button);
+
         SeekBar brightnessSeekBar = settingsView.findViewById(R.id.brightness_seekbar);
+        Button colorPickerButton = settingsView.findViewById(R.id.color_picker_button);
+        Button deleteButton = settingsView.findViewById(R.id.delete_button);
         Button saveButton = settingsView.findViewById(R.id.save_button);
 
-        // Initialize SeekBar with current brightness
+        // Initialize SeekBar
         brightnessSeekBar.setProgress(lightbulb.getBrightness());
         brightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                lightbulb.setBrightness(progress); // Update brightness dynamically
+                lightbulb.setBrightness(progress);
             }
 
             @Override
@@ -124,7 +126,24 @@ public class PopupHandler {
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        // Delete button (only enabled for operators)
+        // Handle Color Picker Button
+        colorPickerButton.setOnClickListener(v -> {
+            AmbilWarnaDialog colorPickerDialog = new AmbilWarnaDialog(context, lightbulb.getColor(), new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                @Override
+                public void onOk(AmbilWarnaDialog dialog, int color) {
+                    lightbulb.setColor(color); // Save the selected color
+                    Toast.makeText(context, "Color updated!", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancel(AmbilWarnaDialog dialog) {
+                    // No action needed
+                }
+            });
+            colorPickerDialog.show();
+        });
+
+        // Delete button (only for operators)
         if (isOperator) {
             deleteButton.setVisibility(View.VISIBLE);
             deleteButton.setOnClickListener(v -> {
@@ -136,16 +155,17 @@ public class PopupHandler {
             deleteButton.setVisibility(View.GONE);
         }
 
-        // Save button listener
+        // Save button
         saveButton.setOnClickListener(v -> {
-            Toast.makeText(context, "Brightness saved: " + lightbulb.getBrightness(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Settings saved!", Toast.LENGTH_SHORT).show();
         });
 
-        // Show the settings popup
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setView(settingsView)
                 .setCancelable(true);
         builder.create().show();
     }
+
+
 
 }

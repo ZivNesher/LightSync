@@ -39,7 +39,7 @@ public class UpdateHandler {
         UserBoundary updateUser = new UserBoundary();
         updateUser.setUsername(username == null || username.trim().isEmpty() ? null : username); // Null if no change
         updateUser.setAvatar(avatar == null || avatar.trim().isEmpty() ? null : avatar); // Null if no change
-        updateUser.setRole(null); // Do not update role
+        updateUser.setRole(null);
 
         // Extract the system ID (use a constant or config)
         String systemId = "2025a.integrative.nagar.yuval";

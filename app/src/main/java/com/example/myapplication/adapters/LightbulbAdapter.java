@@ -22,12 +22,14 @@ public class LightbulbAdapter extends RecyclerView.Adapter<LightbulbAdapter.Ligh
     private final List<Lightbulb> lightbulbs;
     private final Context context;
     private final PopupHandler popupHandler;
+    private final boolean isOperator; // Flag to check the role
 
-    // Updated constructor to include PopupHandler
-    public LightbulbAdapter(List<Lightbulb> lightbulbs, Context context, PopupHandler popupHandler) {
+    // Updated constructor to include isOperator flag
+    public LightbulbAdapter(List<Lightbulb> lightbulbs, Context context, PopupHandler popupHandler, boolean isOperator) {
         this.lightbulbs = lightbulbs;
         this.context = context;
         this.popupHandler = popupHandler;
+        this.isOperator = isOperator; // Set role flag
     }
 
     @NonNull
@@ -47,7 +49,12 @@ public class LightbulbAdapter extends RecyclerView.Adapter<LightbulbAdapter.Ligh
         holder.lightbulbSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> lightbulb.setOn(isChecked));
 
         // Open the settings popup when the settings button is clicked
-        holder.settingsButton.setOnClickListener(v -> popupHandler.showSettingsPopup(lightbulb, this, position));
+        holder.settingsButton.setOnClickListener(v -> popupHandler.showSettingsPopup(lightbulb, this, position, isOperator));
+
+        // Hide delete options if not an operator
+        if (!isOperator) {
+            holder.settingsButton.setVisibility(View.GONE); // Optionally hide the settings button for end users
+        }
     }
 
     @Override

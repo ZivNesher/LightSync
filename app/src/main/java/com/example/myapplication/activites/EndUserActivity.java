@@ -3,7 +3,6 @@ package com.example.myapplication.activites;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.RoomAdapter;
+import com.example.myapplication.handlers.PopupHandler;
 import com.example.myapplication.models.Room;
 
 import java.util.ArrayList;
@@ -24,12 +24,13 @@ public class EndUserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_end_user);
+        setContentView(R.layout.activity_main);
 
-        // Initialize RecyclerView for rooms
+        // Initialize RecyclerView
         RecyclerView roomRecyclerView = findViewById(R.id.roomRecyclerView);
         roomList = new ArrayList<>();
-        roomAdapter = new RoomAdapter(roomList, this);
+        PopupHandler popupHandler = new PopupHandler(this);
+        roomAdapter = new RoomAdapter(roomList, this, popupHandler, false); // false for isOperator
         roomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomRecyclerView.setAdapter(roomAdapter);
 
@@ -40,14 +41,14 @@ public class EndUserActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Initialize Room Data (for testing or actual data)
+        // Initialize room data
         initializeRooms();
     }
 
     private void initializeRooms() {
-        // Add some sample rooms
-        roomList.add(new Room("Room 1"));
-        roomList.add(new Room("Room 2"));
+        // Add sample rooms
+        roomList.add(new Room("Living Room", new ArrayList<>()));
+        roomList.add(new Room("Bedroom", new ArrayList<>()));
         roomAdapter.notifyDataSetChanged();
     }
 }

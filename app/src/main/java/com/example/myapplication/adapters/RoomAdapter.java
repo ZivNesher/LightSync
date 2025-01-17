@@ -16,12 +16,17 @@ import com.google.android.material.textview.MaterialTextView;
 import java.util.List;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
+
     private final List<Room> rooms;
     private final Context context;
+    private final PopupHandler popupHandler;
+    private final boolean isOperator;
 
-    public RoomAdapter(List<Room> rooms, Context context) {
+    public RoomAdapter(List<Room> rooms, Context context, PopupHandler popupHandler, boolean isOperator) {
         this.rooms = rooms;
         this.context = context;
+        this.popupHandler = popupHandler;
+        this.isOperator = isOperator;
     }
 
     @NonNull
@@ -36,13 +41,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         Room room = rooms.get(position);
         holder.roomNameTextView.setText(room.getName());
 
-        // Open lightbulb management popup on room click
-        holder.itemView.setOnClickListener(v -> {
-            PopupHandler popupHandler = new PopupHandler(context);
-            popupHandler.showRoomPopup(room);
-        });
+        // Open lightbulb management popup
+        holder.itemView.setOnClickListener(v -> popupHandler.showRoomPopup(room, isOperator));
     }
-
 
     @Override
     public int getItemCount() {

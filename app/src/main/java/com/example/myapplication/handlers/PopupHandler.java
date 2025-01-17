@@ -28,7 +28,7 @@ public class PopupHandler {
         this.context = context;
     }
 
-    public void showRoomPopup(Room room) {
+    public void showRoomPopup(Room room, boolean isOperator) {
         // Inflate the popup layout for lightbulbs
         View popupView = LayoutInflater.from(context).inflate(R.layout.lightbulb_popup, null);
 
@@ -38,23 +38,26 @@ public class PopupHandler {
 
         // Lightbulb data for the room
         ArrayList<Lightbulb> lightbulbs = (ArrayList<Lightbulb>) room.getLightbulbs();
-        LightbulbAdapter adapter = new LightbulbAdapter(lightbulbs, context, this);
+        LightbulbAdapter adapter = new LightbulbAdapter(lightbulbs, context, this, isOperator);
         lightbulbRecyclerView.setAdapter(adapter);
 
-        // Add Lightbulb button
+        // Add Lightbulb button (only visible for operators)
         Button addLightbulbButton = popupView.findViewById(R.id.add_lightbulb_button);
-        addLightbulbButton.setOnClickListener(v -> showAddLightbulbPopup(lightbulbs, adapter));
+        if (isOperator) {
+            addLightbulbButton.setVisibility(View.VISIBLE);
+            addLightbulbButton.setOnClickListener(v -> showAddLightbulbPopup(lightbulbs, adapter));
+        } else {
+            addLightbulbButton.setVisibility(View.GONE);
+        }
 
         // Close button
         Button closeButton = popupView.findViewById(R.id.close_popup_button);
         closeButton.setOnClickListener(v -> {
-            PopupWindow popupWindow = new PopupWindow(
-                    popupView,
-                    RecyclerView.LayoutParams.MATCH_PARENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT,
-                    true
-            );
-            popupWindow.dismiss();
+            AlertDialog dialog = new AlertDialog.Builder(context)
+                    .setView(popupView)
+                    .setCancelable(true)
+                    .create();
+            dialog.dismiss();
         });
 
         // Show the popup
@@ -63,6 +66,7 @@ public class PopupHandler {
                 .setCancelable(true);
         builder.create().show();
     }
+
 
     private void showAddLightbulbPopup(ArrayList<Lightbulb> lightbulbs, LightbulbAdapter adapter) {
         // Inflate the popup layout for adding a lightbulb
@@ -98,7 +102,7 @@ public class PopupHandler {
         dialog.show();
     }
 
-    public void showSettingsPopup(Lightbulb lightbulb, LightbulbAdapter adapter, int position) {
+    public void showSettingsPopup(Lightbulb lightbulb, LightbulbAdapter adapter, int position, boolean isOperator) {
         // Inflate the popup layout for settings
         View settingsView = LayoutInflater.from(context).inflate(R.layout.settings_popup, null);
         Button deleteButton = settingsView.findViewById(R.id.delete_button);
@@ -120,12 +124,17 @@ public class PopupHandler {
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        // Delete button listener
-        deleteButton.setOnClickListener(v -> {
-            adapter.getLightbulbs().remove(position);
-            adapter.notifyItemRemoved(position);
-            Toast.makeText(context, "Lightbulb deleted", Toast.LENGTH_SHORT).show();
-        });
+        // Delete button (only enabled for operators)
+        if (isOperator) {
+            deleteButton.setVisibility(View.VISIBLE);
+            deleteButton.setOnClickListener(v -> {
+                adapter.getLightbulbs().remove(position);
+                adapter.notifyItemRemoved(position);
+                Toast.makeText(context, "Lightbulb deleted", Toast.LENGTH_SHORT).show();
+            });
+        } else {
+            deleteButton.setVisibility(View.GONE);
+        }
 
         // Save button listener
         saveButton.setOnClickListener(v -> {
@@ -138,4 +147,5 @@ public class PopupHandler {
                 .setCancelable(true);
         builder.create().show();
     }
+
 }

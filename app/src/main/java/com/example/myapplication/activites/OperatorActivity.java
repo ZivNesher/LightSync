@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.RoomAdapter;
+import com.example.myapplication.handlers.PopupHandler;
 import com.example.myapplication.models.Room;
 
 import java.util.ArrayList;
@@ -31,16 +32,13 @@ public class OperatorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize RecyclerView for rooms
+        // Initialize RecyclerView
         RecyclerView roomRecyclerView = findViewById(R.id.roomRecyclerView);
         roomList = new ArrayList<>();
-        roomAdapter = new RoomAdapter(roomList, this);
+        PopupHandler popupHandler = new PopupHandler(this);
+        roomAdapter = new RoomAdapter(roomList, this, popupHandler, true); // true for isOperator
         roomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomRecyclerView.setAdapter(roomAdapter);
-
-        // Add Room Button
-        ImageButton plusButton = findViewById(R.id.plus_button);
-        plusButton.setOnClickListener(v -> showNewRoomPopup());
 
         // Profile Button
         ImageButton profileButton = findViewById(R.id.profile_button);
@@ -49,14 +47,18 @@ public class OperatorActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Initialize Room Data
+        // Add Room Button
+        ImageButton plusButton = findViewById(R.id.plus_button);
+        plusButton.setOnClickListener(v -> showNewRoomPopup());
+
+        // Initialize room data
         initializeRooms();
     }
 
     private void initializeRooms() {
-        // Add some sample rooms (for testing or actual data)
-        roomList.add(new Room("Living Room"));
-        roomList.add(new Room("Bedroom"));
+        // Add sample rooms
+        roomList.add(new Room("Living Room", new ArrayList<>()));
+        roomList.add(new Room("Bedroom", new ArrayList<>()));
         roomAdapter.notifyDataSetChanged();
     }
 
@@ -72,7 +74,6 @@ public class OperatorActivity extends AppCompatActivity {
                 .create();
 
         cancelButton.setOnClickListener(v -> dialog.dismiss());
-
         createButton.setOnClickListener(v -> {
             String roomName = newRoomNameEditText.getText().toString().trim();
             if (roomName.isEmpty()) {
@@ -80,7 +81,7 @@ public class OperatorActivity extends AppCompatActivity {
                 return;
             }
 
-            roomList.add(new Room(roomName));
+            roomList.add(new Room(roomName, new ArrayList<>()));
             roomAdapter.notifyItemInserted(roomList.size() - 1);
             Toast.makeText(this, "Room created: " + roomName, Toast.LENGTH_SHORT).show();
             dialog.dismiss();

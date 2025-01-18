@@ -6,20 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Toast;
-import yuku.ambilwarna.AmbilWarnaDialog;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activites.OperatorActivity;
 import com.example.myapplication.adapters.LightbulbAdapter;
 import com.example.myapplication.models.Lightbulb;
 import com.example.myapplication.models.Room;
 
 import java.util.ArrayList;
+
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class PopupHandler {
 
@@ -39,14 +40,14 @@ public class PopupHandler {
 
         // Lightbulb data for the room
         ArrayList<Lightbulb> lightbulbs = (ArrayList<Lightbulb>) room.getLightbulbs();
-        LightbulbAdapter adapter = new LightbulbAdapter(lightbulbs, context, this, isOperator);
+        LightbulbAdapter adapter = new LightbulbAdapter(lightbulbs, context, this, isOperator,room);
         lightbulbRecyclerView.setAdapter(adapter);
 
         // Add Lightbulb button (only visible for operators)
         Button addLightbulbButton = popupView.findViewById(R.id.add_lightbulb_button);
         if (isOperator) {
             addLightbulbButton.setVisibility(View.VISIBLE);
-            addLightbulbButton.setOnClickListener(v -> showAddLightbulbPopup(lightbulbs, adapter));
+            addLightbulbButton.setOnClickListener(v -> showAddLightbulbPopup(lightbulbs, adapter, room));
         } else {
             addLightbulbButton.setVisibility(View.GONE);
         }
@@ -68,24 +69,19 @@ public class PopupHandler {
         builder.create().show();
     }
 
-
-    private void showAddLightbulbPopup(ArrayList<Lightbulb> lightbulbs, LightbulbAdapter adapter) {
-        // Inflate the popup layout for adding a lightbulb
+    private void showAddLightbulbPopup(ArrayList<Lightbulb> lightbulbs, LightbulbAdapter adapter, Room room) {
         View addPopupView = LayoutInflater.from(context).inflate(R.layout.add_lightbulb_popup, null);
         EditText lightbulbNameEditText = addPopupView.findViewById(R.id.lightbulb_name_input);
         Button addButton = addPopupView.findViewById(R.id.add_button);
         Button cancelButton = addPopupView.findViewById(R.id.cancel_button);
 
-        // Create the dialog for the popup
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setView(addPopupView)
                 .setCancelable(false)
                 .create();
 
-        // Cancel button listener
         cancelButton.setOnClickListener(v -> dialog.dismiss());
 
-        // Add button listener
         addButton.setOnClickListener(v -> {
             String name = lightbulbNameEditText.getText().toString().trim();
             if (name.isEmpty()) {
@@ -93,9 +89,16 @@ public class PopupHandler {
                 return;
             }
 
-            // Add the new lightbulb to the list and update the adapter
-            lightbulbs.add(new Lightbulb(name, false, 0 , 122222));
+            // Add the lightbulb to the list
+            Lightbulb newLightbulb = new Lightbulb(name, false, 0, 0xFFFFFF);
+            lightbulbs.add(newLightbulb);
             adapter.notifyItemInserted(lightbulbs.size() - 1);
+
+            // Update room in backend
+            if (context instanceof OperatorActivity) {
+                ((OperatorActivity) context).updateRoomInBackend(room, lightbulbs); // Pass room and updated lightbulbs
+            }
+
             Toast.makeText(context, "Lightbulb added: " + name, Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
@@ -165,7 +168,4 @@ public class PopupHandler {
                 .setCancelable(true);
         builder.create().show();
     }
-
-
-
 }

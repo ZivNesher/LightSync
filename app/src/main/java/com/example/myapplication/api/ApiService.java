@@ -47,6 +47,14 @@ public interface ApiService {
             @Query("page") int page,
             @Query("size") int size
     );
+    @PUT("/aii/objects/{systemId}/{id}")
+    Call<Void> updateObject(
+            @Path("systemId") String systemId,
+            @Path("id") String id,
+            @Query("userSystemID") String userSystemId,
+            @Query("userEmail") String userEmail,
+            @Body ObjectBoundary update
+    );
 
 
 }

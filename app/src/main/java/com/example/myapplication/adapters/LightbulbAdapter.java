@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activites.OperatorActivity;
 import com.example.myapplication.handlers.PopupHandler;
 import com.example.myapplication.models.Lightbulb;
+import com.example.myapplication.models.Room;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
@@ -23,14 +25,16 @@ public class LightbulbAdapter extends RecyclerView.Adapter<LightbulbAdapter.Ligh
     private final Context context;
     private final PopupHandler popupHandler;
     private final boolean isOperator; // Flag to check the role
+    private final Room room;
 
-    // Updated constructor to include isOperator flag
-    public LightbulbAdapter(List<Lightbulb> lightbulbs, Context context, PopupHandler popupHandler, boolean isOperator) {
+    public LightbulbAdapter(List<Lightbulb> lightbulbs, Context context, PopupHandler popupHandler, boolean isOperator, Room room) {
         this.lightbulbs = lightbulbs;
         this.context = context;
         this.popupHandler = popupHandler;
-        this.isOperator = isOperator; // Set role flag
+        this.isOperator = isOperator;
+        this.room = room;
     }
+
 
     @NonNull
     @Override
@@ -45,17 +49,22 @@ public class LightbulbAdapter extends RecyclerView.Adapter<LightbulbAdapter.Ligh
         holder.lightbulbName.setText(lightbulb.getName());
         holder.lightbulbSwitch.setChecked(lightbulb.isOn());
 
-        // Update the lightbulb's on/off state
-        holder.lightbulbSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> lightbulb.setOn(isChecked));
+        // Update lightbulb state
+        holder.lightbulbSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            lightbulb.setOn(isChecked);
+            saveRoomToBackend(room);
+        });
 
-        // Open the settings popup when the settings button is clicked
         holder.settingsButton.setOnClickListener(v -> popupHandler.showSettingsPopup(lightbulb, this, position, isOperator));
+    }
 
-        // Hide delete options if not an operator
-        if (!isOperator) {
-            holder.settingsButton.setVisibility(View.GONE); // Optionally hide the settings button for end users
+    private void saveRoomToBackend(Room room) {
+        // Forward this call to OperatorActivity (or handle it locally if needed)
+        if (context instanceof OperatorActivity) {
+            ((OperatorActivity) context).saveRoomToBackend(room);
         }
     }
+
 
     @Override
     public int getItemCount() {

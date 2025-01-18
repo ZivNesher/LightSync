@@ -1,13 +1,12 @@
 package com.example.myapplication.models;
-
 public class Lightbulb {
-    private String name;  // The name of the lightbulb (e.g., "Ceiling Light")
-    private boolean isOn; // Whether the lightbulb is on or off
-    private int brightness; // Brightness level from 0 to 100
+    private String id; // Matches backend ObjectBoundary ID
+    private String name;
+    private boolean isOn;
+    private int brightness;
     private int color;
 
-    // Constructor
-    public Lightbulb(String name, boolean isOn, int brightness , int color) {
+    public Lightbulb(String name, boolean isOn, int brightness, int color) {
         this.name = name;
         this.isOn = isOn;
         this.brightness = brightness;
@@ -15,6 +14,14 @@ public class Lightbulb {
     }
 
     // Getters and Setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -42,17 +49,8 @@ public class Lightbulb {
     public int getColor() {
         return color;
     }
-    public void setColor(int color){
-        this.color = color;
-    }
 
-    @Override
-    public String toString() {
-        return "Lightbulb{" +
-                "name='" + name + '\'' +
-                ", isOn=" + isOn +
-                ", brightness=" + brightness +
-                ", color='" + color + '\'' +
-                '}';
+    public void setColor(int color) {
+        this.color = color;
     }
 }

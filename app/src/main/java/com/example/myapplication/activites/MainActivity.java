@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         String role = sharedPreferences.getString("loggedInRole", null);
 
+        // Redirect based on role
         if ("END_USER".equalsIgnoreCase(role)) {
             Intent intent = new Intent(MainActivity.this, EndUserActivity.class);
             startActivity(intent);
@@ -49,6 +50,28 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+
+        // Initialize RecyclerView and room data
+        initializeUI();
+    }
+
+    private void initializeUI() {
+        setContentView(R.layout.activity_main);
+        RecyclerView roomRecyclerView = findViewById(R.id.roomRecyclerView);
+
+        roomList = new ArrayList<>();
+        roomAdapter = new RoomAdapter(roomList, this, null, false);
+        roomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        roomRecyclerView.setAdapter(roomAdapter);
+
+        // Populate initial room data (example rooms)
+        initializeRooms();
+    }
+
+    private void initializeRooms() {
+        roomList.add(new Room("Living Room"));
+        roomList.add(new Room("Bedroom"));
+        roomAdapter.notifyDataSetChanged();
     }
 
     private void showNewRoomPopup() {

@@ -17,10 +17,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.RoomAdapter;
 import com.example.myapplication.handlers.PopupHandler;
+import com.example.myapplication.models.ObjectBoundary;
 import com.example.myapplication.models.Room;
+import com.example.myapplication.api.ApiService;
+import com.example.myapplication.api.ApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OperatorActivity extends AppCompatActivity {
 
@@ -30,7 +37,7 @@ public class OperatorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_operator);
 
         // Initialize RecyclerView
         RecyclerView roomRecyclerView = findViewById(R.id.roomRecyclerView);
@@ -52,28 +59,59 @@ public class OperatorActivity extends AppCompatActivity {
         plusButton.setOnClickListener(v -> showNewRoomPopup());
 
         // Initialize room data
-        initializeRooms();
+        fetchRoomsFromBackend();
     }
 
-    private void initializeRooms() {
-        // Add sample rooms
-        roomList.add(new Room("Living Room", new ArrayList<>()));
-        roomList.add(new Room("Bedroom", new ArrayList<>()));
-        roomAdapter.notifyDataSetChanged();
+    private void fetchRoomsFromBackend() {
+        ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+
+        // Replace with the correct system ID and user email
+        String systemID = "2025a.integrative.nagar.yuval";
+        String userEmail = "z@g.com";
+
+        apiService.getRooms(systemID, userEmail, 0, 10).enqueue(new Callback<List<ObjectBoundary>>() {
+            @Override
+            public void onResponse(Call<List<ObjectBoundary>> call, Response<List<ObjectBoundary>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    roomList.clear(); // Clear the existing list
+                    for (ObjectBoundary boundary : response.body()) {
+                        Room room = new Room(
+                                boundary.getAlias(),
+                                boundary.isActive()
+                        );
+                        roomList.add(room); // Add room to the list
+                    }
+                    roomAdapter.notifyDataSetChanged(); // Notify adapter about data changes
+                } else {
+                    Toast.makeText(OperatorActivity.this, "Failed to fetch rooms: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ObjectBoundary>> call, Throwable t) {
+                Toast.makeText(OperatorActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     private void showNewRoomPopup() {
+        // Inflate the popup layout for creating a new room
         View popupView = LayoutInflater.from(this).inflate(R.layout.new_room_popup, null);
         EditText newRoomNameEditText = popupView.findViewById(R.id.new_room_name);
         Button cancelButton = popupView.findViewById(R.id.cancel_button);
         Button createButton = popupView.findViewById(R.id.create_button);
 
+        // Create an AlertDialog for the popup
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(popupView)
                 .setCancelable(false)
                 .create();
 
+        // Cancel button listener
         cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        // Create button listener
         createButton.setOnClickListener(v -> {
             String roomName = newRoomNameEditText.getText().toString().trim();
             if (roomName.isEmpty()) {
@@ -81,12 +119,15 @@ public class OperatorActivity extends AppCompatActivity {
                 return;
             }
 
-            roomList.add(new Room(roomName, new ArrayList<>()));
+            // Add the new room to the list and update the RecyclerView
+            roomList.add(new Room(roomName));
             roomAdapter.notifyItemInserted(roomList.size() - 1);
+
             Toast.makeText(this, "Room created: " + roomName, Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
 
+        // Show the popup dialog
         dialog.show();
     }
 }

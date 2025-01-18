@@ -42,13 +42,12 @@ public class EndUserActivity extends AppCompatActivity {
         });
 
         // Initialize room data
-        initializeRooms();
+        //initializeRooms();
     }
 
-    private void initializeRooms() {
-        // Add sample rooms
-        roomList.add(new Room("Living Room", new ArrayList<>()));
-        roomList.add(new Room("Bedroom", new ArrayList<>()));
-        roomAdapter.notifyDataSetChanged();
-    }
+//    private void initializeRooms() {
+//        // Add sample rooms        roomList.add(new Room("Living Room", new ArrayList<>()));
+//        roomList.add(new Room("Bedroom", new ArrayList<>()));
+//        roomAdapter.notifyDataSetChanged();
+//    }
 }

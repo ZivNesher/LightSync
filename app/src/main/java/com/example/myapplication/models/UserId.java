@@ -1,7 +1,10 @@
 package com.example.myapplication.models;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.Objects;
 
+@JsonPropertyOrder({ "systemID", "email" }) // Define the desired order
 public class UserId {
     private String systemID;
     private String email;
@@ -9,8 +12,8 @@ public class UserId {
     public UserId() {
     }
 
-    public UserId(String systemID, String email) {
-        this.systemID = systemID;
+    public UserId(String systemId, String email) {
+        this.systemID = systemId;
         this.email = email;
     }
 
@@ -18,8 +21,8 @@ public class UserId {
         return systemID;
     }
 
-    public void setSystemID(String systemID) {
-        this.systemID = systemID;
+    public void setSystemID(String systemId) {
+        this.systemID = systemId;
     }
 
     public String getEmail() {
@@ -34,8 +37,8 @@ public class UserId {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserId userId = (UserId) o;
-        return Objects.equals(systemID, userId.systemID) && Objects.equals(email, userId.email);
+        UserId that = (UserId) o;
+        return Objects.equals(systemID, that.systemID) && Objects.equals(email, that.email);
     }
 
     @Override
@@ -45,9 +48,7 @@ public class UserId {
 
     @Override
     public String toString() {
-        return "UserId{" +
-                "systemID='" + systemID + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "UserId [systemId=" + systemID + ", email=" + email + "]";
     }
+
 }

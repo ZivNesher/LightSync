@@ -114,13 +114,13 @@ public class CommandBoundary {
     }
 
     public static class InvokedBy {
-        private UserBoundary.UserId userId;
+        private UserId userId;
 
-        public UserBoundary.UserId getUserId() {
+        public UserId getUserId() {
             return userId;
         }
 
-        public void setUserId(UserBoundary.UserId userId) {
+        public void setUserId(UserId userId) {
             this.userId = userId;
         }
     }

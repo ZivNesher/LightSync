@@ -31,7 +31,8 @@ public interface ApiService {
     );
 
     @POST("/aii/objects")
-    Call<ObjectBoundary> createRoom(@Body ObjectBoundary room);
+    Call<ObjectBoundary> createRoom(@Body ObjectBoundary newObject);
+
 
     @GET("/aii/objects/{roomId}/lightbulbs")
     Call<List<ObjectBoundary>> getLightbulbs(@Path("roomId") String roomId);

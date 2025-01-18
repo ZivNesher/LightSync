@@ -56,18 +56,6 @@ public class ObjectBoundary {
         }
     }
 
-    public static class CreatedBy {
-        private UserId userId;
-
-        public UserId getUserId() {
-            return userId;
-        }
-
-        public void setUserId(UserId userId) {
-            this.userId = userId;
-        }
-    }
-
     public static class UserId {
         private String systemId;
         private String email;

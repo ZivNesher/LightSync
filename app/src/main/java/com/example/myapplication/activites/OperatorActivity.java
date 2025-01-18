@@ -2,6 +2,7 @@ package com.example.myapplication.activites;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,12 +18,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.RoomAdapter;
 import com.example.myapplication.handlers.PopupHandler;
+import com.example.myapplication.models.CreatedBy;
 import com.example.myapplication.models.ObjectBoundary;
 import com.example.myapplication.models.Room;
 import com.example.myapplication.api.ApiService;
 import com.example.myapplication.api.ApiClient;
+import com.example.myapplication.models.UserId;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -119,15 +124,74 @@ public class OperatorActivity extends AppCompatActivity {
                 return;
             }
 
-            // Add the new room to the list and update the RecyclerView
-            roomList.add(new Room(roomName));
-            roomAdapter.notifyItemInserted(roomList.size() - 1);
+            ObjectBoundary newRoom = new ObjectBoundary();
+            CreatedBy createdBy = new CreatedBy(); // Use the standalone CreatedBy class
+            UserId userId = new UserId(); // Use the standalone UserId class
 
-            Toast.makeText(this, "Room created: " + roomName, Toast.LENGTH_SHORT).show();
+// Set the user ID details
+            userId.setSystemID("2025a.integrative.nagar.yuval"); // Replace with the correct system ID
+            userId.setEmail("z@g.com"); // Replace with the correct user email
+
+// Set the CreatedBy object
+            createdBy.setUserId(userId);
+
+// Set the other ObjectBoundary details
+            newRoom.setAlias(roomName);
+            newRoom.setType("Room");
+            newRoom.setStatus("Active");
+            newRoom.setActive(true);
+            newRoom.setCreatedBy(createdBy);
+
+// Set default location
+            ObjectBoundary.Location location = new ObjectBoundary.Location();
+            location.setLat(0.0);
+            location.setLng(0.0);
+            newRoom.setLocation(location);
+
+// Set empty objectDetails
+            newRoom.setObjectDetails(new HashMap<>());
+
+
+            // Make the API call to create the room
+            ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+            Gson gson = new Gson();
+            String jsonRequest = gson.toJson(newRoom);
+            Log.d("CreateRoomRequest", jsonRequest);
+
+            apiService.createRoom(newRoom).enqueue(new Callback<ObjectBoundary>() {
+                @Override
+                public void onResponse(Call<ObjectBoundary> call, Response<ObjectBoundary> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        // Successfully created room
+                        Room room = new Room(response.body().getAlias(), response.body().isActive());
+                        roomList.add(room);
+                        roomAdapter.notifyItemInserted(roomList.size() - 1);
+                        Toast.makeText(OperatorActivity.this, "Room created: " + response.body().getAlias(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Log the error response for debugging
+                        try {
+                            String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                            Log.e("API Error", "Failed to create room: " + errorBody);
+                            Toast.makeText(OperatorActivity.this, "Failed to create room: " + errorBody, Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Log.e("API Error", "Error reading errorBody", e);
+                            Toast.makeText(OperatorActivity.this, "Failed to create room: Unable to parse error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+
+                @Override
+                public void onFailure(Call<ObjectBoundary> call, Throwable t) {
+                    Toast.makeText(OperatorActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
             dialog.dismiss();
         });
 
         // Show the popup dialog
         dialog.show();
     }
+
 }

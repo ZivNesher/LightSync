@@ -1,6 +1,7 @@
 package com.example.myapplication.activites;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,10 +42,25 @@ public class OperatorActivity extends AppCompatActivity {
     private List<Room> roomList;
     private RoomAdapter roomAdapter;
 
+    private String systemID;
+    private String userEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operator);
+        // Retrieve user data from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        systemID = sharedPreferences.getString("loggedInSystemID", "");
+        userEmail = sharedPreferences.getString("loggedInEmail", "");
+
+        if (systemID.isEmpty() || userEmail.isEmpty()) {
+            Toast.makeText(this, "User not logged in. Please login again.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
 
         // Initialize RecyclerView
         RecyclerView roomRecyclerView = findViewById(R.id.roomRecyclerView);
@@ -71,9 +87,6 @@ public class OperatorActivity extends AppCompatActivity {
 
     private void fetchRoomsFromBackend() {
         ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
-
-        String systemID = "2025a.integrative.nagar.yuval";
-        String userEmail = "z@g.com";
 
         apiService.getRooms(systemID, userEmail, 0, 10).enqueue(new Callback<List<ObjectBoundary>>() {
             @Override
@@ -134,10 +147,10 @@ public class OperatorActivity extends AppCompatActivity {
 
         ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
         apiService.updateObject(
-                "2025a.integrative.nagar.yuval",
+                systemID,
                 room.getId(),
-                "2025a.integrative.nagar.yuval",
-                "z@g.com",
+                systemID,
+                userEmail,
                 updatedRoom
         ).enqueue(new Callback<Void>() {
             @Override
@@ -187,8 +200,8 @@ public class OperatorActivity extends AppCompatActivity {
             UserId userId = new UserId(); // Use the standalone UserId class
 
 // Set the user ID details
-            userId.setSystemID("2025a.integrative.nagar.yuval"); // Replace with the correct system ID
-            userId.setEmail("z@g.com"); // Replace with the correct user email
+            userId.setSystemID(systemID); // Replace with the correct system ID
+            userId.setEmail(userEmail); // Replace with the correct user email
 
 // Set the CreatedBy object
             createdBy.setUserId(userId);
@@ -276,10 +289,10 @@ public class OperatorActivity extends AppCompatActivity {
         // Make the API call
         ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
         apiService.updateObject(
-                "2025a.integrative.nagar.yuval", // systemId
+                systemID, // systemId
                 room.getId(),                  // Use the system-generated ID
-                "2025a.integrative.nagar.yuval", // userSystemId
-                "z@g.com",                      // userEmail
+                systemID, // userSystemId
+                userEmail,                      // userEmail
                 roomBoundary
         ).enqueue(new Callback<Void>() {
             @Override

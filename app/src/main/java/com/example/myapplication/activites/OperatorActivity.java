@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -76,14 +77,13 @@ public class OperatorActivity extends AppCompatActivity {
         roomList = new ArrayList<>();
         PopupHandler popupHandler = new PopupHandler(this);
 
-// Determine the value of isOperator based on RoleEnum
-        boolean isOperator = (userRole == RoleEnum.OPERATOR); // true if OPERATORzz, false if END_USER
+        // Determine the value of isOperator based on RoleEnum
+        boolean isOperator = (userRole == RoleEnum.OPERATOR);
 
-// Pass the correct isOperator value
+        // Pass the correct isOperator value
         roomAdapter = new RoomAdapter(roomList, this, popupHandler, isOperator);
         roomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomRecyclerView.setAdapter(roomAdapter);
-
 
         // Profile Button
         ImageButton profileButton = findViewById(R.id.profile_button);
@@ -100,9 +100,22 @@ public class OperatorActivity extends AppCompatActivity {
             plusButton.setOnClickListener(v -> showNewRoomPopup());
         }
 
+        // Switch for toggling all lights
+        Switch lightbulbSwitch = findViewById(R.id.main_switch);
+        lightbulbSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Turn all lights ON
+                toggleAllLights(true);
+            } else {
+                // Turn all lights OFF
+                toggleAllLights(false);
+            }
+        });
+
         // Initialize room data
         fetchRoomsFromBackend();
     }
+
 
 
     private void fetchRoomsFromBackend() {
@@ -338,6 +351,50 @@ public class OperatorActivity extends AppCompatActivity {
             }
         });
     }
+    private void toggleAllLights(boolean turnOn) {
+        for (Room room : roomList) {
+            // Update the state of all lightbulbs in the room
+            for (Lightbulb lightbulb : room.getLightbulbs()) {
+                lightbulb.setOn(turnOn); // Update the lightbulb's state
+            }
+
+            // Save the updated room to the backend
+            saveRoomToBackend(room);
+        }
+
+        // Refresh the UI to reflect changes
+        roomAdapter.notifyDataSetChanged();
+    }
+
+    private void updateLightsInBackend(boolean turnOn) {
+        ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
+
+        for (Room room : roomList) {
+            for (Lightbulb lightbulb : room.getLightbulbs()) {
+                ObjectBoundary lightUpdate = new ObjectBoundary();
+                lightUpdate.setAlias(lightbulb.getName());
+                lightUpdate.setActive(turnOn);
+
+                apiService.updateObject(systemID, lightbulb.getId(), systemID, userEmail, lightUpdate)
+                        .enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    Log.d("BackendUpdate", "Light state updated successfully");
+                                } else {
+                                    Log.e("BackendUpdate", "Failed to update light state: " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                Log.e("BackendUpdate", "Error updating light state: " + t.getMessage());
+                            }
+                        });
+            }
+        }
+    }
+
 
 
 

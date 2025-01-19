@@ -8,12 +8,12 @@
 
     <TextView
         android:id="@+id/lightbulb_name"
-        android:layout_width="0dp"
+        android:layout_width="304dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:text="Lightbulb Name"
-        android:textSize="16sp"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
 
     <Switch
         android:id="@+id/lightbulb_switch"

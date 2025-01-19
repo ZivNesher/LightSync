@@ -2,6 +2,7 @@ package com.example.myapplication.handlers;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.activites.OperatorActivity;
 import com.example.myapplication.adapters.LightbulbAdapter;
+import com.example.myapplication.data.RoleEnum;
 import com.example.myapplication.models.Lightbulb;
 import com.example.myapplication.models.Room;
 
@@ -30,7 +32,7 @@ public class PopupHandler {
         this.context = context;
     }
 
-    public void showRoomPopup(Room room, boolean isOperator) {
+    public void showRoomPopup(Room room, boolean isOperator, RoleEnum userRole) {
         // Inflate the popup layout for lightbulbs
         View popupView = LayoutInflater.from(context).inflate(R.layout.lightbulb_popup, null);
 
@@ -40,21 +42,32 @@ public class PopupHandler {
 
         // Lightbulb data for the room
         ArrayList<Lightbulb> lightbulbs = (ArrayList<Lightbulb>) room.getLightbulbs();
-        LightbulbAdapter adapter = new LightbulbAdapter(lightbulbs, context, this, isOperator,room);
+        LightbulbAdapter adapter = new LightbulbAdapter(lightbulbs, context, this, isOperator, room);
         lightbulbRecyclerView.setAdapter(adapter);
 
-        // Add Lightbulb button (only visible for operators)
+        // Add Lightbulb button
         Button addLightbulbButton = popupView.findViewById(R.id.add_lightbulb_button);
-        if (isOperator) {
+
+        // Role-based logic for button visibility
+        if (!isOperator) {
+            // Hide the button for END_USER
+            Log.d("PopupHandler", "Hiding Add Lightbulb Button for END_USER");
+            addLightbulbButton.setVisibility(View.GONE);
+        } else if ( isOperator == true) {
+            // Show the button for OPERATOR
+            Log.d("PopupHandler", "Showing Add Lightbulb Button for OPERATOR");
             addLightbulbButton.setVisibility(View.VISIBLE);
             addLightbulbButton.setOnClickListener(v -> showAddLightbulbPopup(lightbulbs, adapter, room));
         } else {
+            // Default case: Hide the button
+            Log.d("PopupHandler", "Default Case - Hiding Add Lightbulb Button");
             addLightbulbButton.setVisibility(View.GONE);
         }
 
         // Close button
         Button closeButton = popupView.findViewById(R.id.close_popup_button);
         closeButton.setOnClickListener(v -> {
+            // Dismiss the popup when the close button is clicked
             AlertDialog dialog = new AlertDialog.Builder(context)
                     .setView(popupView)
                     .setCancelable(true)
@@ -68,6 +81,9 @@ public class PopupHandler {
                 .setCancelable(true);
         builder.create().show();
     }
+
+
+
 
     private void showAddLightbulbPopup(ArrayList<Lightbulb> lightbulbs, LightbulbAdapter adapter, Room room) {
         View addPopupView = LayoutInflater.from(context).inflate(R.layout.add_lightbulb_popup, null);
@@ -106,12 +122,15 @@ public class PopupHandler {
         dialog.show();
     }
 
-    public void showSettingsPopup(Lightbulb lightbulb, LightbulbAdapter adapter, int position, boolean isOperator) {
+    public void showSettingsPopup(Lightbulb lightbulb, LightbulbAdapter adapter, int position, boolean isOperator, String userRole) {
         View settingsView = LayoutInflater.from(context).inflate(R.layout.settings_popup, null);
 
         SeekBar brightnessSeekBar = settingsView.findViewById(R.id.brightness_seekbar);
         Button colorPickerButton = settingsView.findViewById(R.id.color_picker_button);
         Button deleteButton = settingsView.findViewById(R.id.delete_button);
+        if (userRole.equals("END_USER")) {
+            deleteButton.setVisibility(View.GONE);
+        }
         Button saveButton = settingsView.findViewById(R.id.save_button);
 
         // Initialize SeekBar
@@ -147,7 +166,7 @@ public class PopupHandler {
         });
 
         // Delete button (only for operators)
-        if (isOperator) {
+        if (isOperator&&userRole.equals("OPERATOR")) {
             deleteButton.setVisibility(View.VISIBLE);
             deleteButton.setOnClickListener(v -> {
                 adapter.getLightbulbs().remove(position);

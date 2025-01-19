@@ -2,6 +2,7 @@ package com.example.myapplication.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.activites.OperatorActivity;
+import com.example.myapplication.data.RoleEnum;
 import com.example.myapplication.handlers.PopupHandler;
 import com.example.myapplication.models.Lightbulb;
 import com.example.myapplication.models.Room;
@@ -54,8 +56,9 @@ public class LightbulbAdapter extends RecyclerView.Adapter<LightbulbAdapter.Ligh
             lightbulb.setOn(isChecked);
             saveRoomToBackend(room);
         });
-
-        holder.settingsButton.setOnClickListener(v -> popupHandler.showSettingsPopup(lightbulb, this, position, isOperator));
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        String userRole = sharedPreferences.getString("loggedInUserRole", "");
+        holder.settingsButton.setOnClickListener(v -> popupHandler.showSettingsPopup(lightbulb, this, position, isOperator,userRole));
     }
 
     private void saveRoomToBackend(Room room) {

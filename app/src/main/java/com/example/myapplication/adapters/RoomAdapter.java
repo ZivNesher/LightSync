@@ -1,6 +1,7 @@
 package com.example.myapplication.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.data.RoleEnum;
 import com.example.myapplication.handlers.PopupHandler;
 import com.example.myapplication.models.Room;
 import com.google.android.material.textview.MaterialTextView;
@@ -21,12 +23,22 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private final Context context;
     private final PopupHandler popupHandler;
     private final boolean isOperator;
+    private RoleEnum userRole;
 
     public RoomAdapter(List<Room> rooms, Context context, PopupHandler popupHandler, boolean isOperator) {
         this.rooms = rooms;
         this.context = context;
         this.popupHandler = popupHandler;
         this.isOperator = isOperator;
+
+        // Retrieve user role from SharedPreferences and convert it to RoleEnum
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        String roleString = sharedPreferences.getString("loggedInUserRole", "END_USER"); // Default to END_USER
+        try {
+            this.userRole = RoleEnum.valueOf(roleString); // Convert string to RoleEnum
+        } catch (IllegalArgumentException | NullPointerException e) {
+            this.userRole = RoleEnum.END_USER; // Fallback to default role
+        }
     }
 
     @NonNull
@@ -42,7 +54,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.roomNameTextView.setText(room.getName());
 
         // Open lightbulb management popup
-        holder.itemView.setOnClickListener(v -> popupHandler.showRoomPopup(room, isOperator));
+        holder.itemView.setOnClickListener(v -> popupHandler.showRoomPopup(room, isOperator,userRole));
     }
 
     @Override

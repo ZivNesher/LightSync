@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.RoomAdapter;
+import com.example.myapplication.data.RoleEnum;
 import com.example.myapplication.handlers.PopupHandler;
 import com.example.myapplication.models.CreatedBy;
 import com.example.myapplication.models.Lightbulb;
@@ -49,10 +50,19 @@ public class OperatorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operator);
+
         // Retrieve user data from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         systemID = sharedPreferences.getString("loggedInSystemID", "");
         userEmail = sharedPreferences.getString("loggedInEmail", "");
+        String roleString = sharedPreferences.getString("loggedInRole", "END_USER"); // Default to END_USER
+
+        RoleEnum userRole;
+        try {
+            userRole = RoleEnum.valueOf(roleString); // Convert the string to RoleEnum
+        } catch (IllegalArgumentException | NullPointerException e) {
+            userRole = RoleEnum.END_USER; // Fallback to default role
+        }
 
         if (systemID.isEmpty() || userEmail.isEmpty()) {
             Toast.makeText(this, "User not logged in. Please login again.", Toast.LENGTH_SHORT).show();
@@ -61,14 +71,19 @@ public class OperatorActivity extends AppCompatActivity {
             return;
         }
 
-
         // Initialize RecyclerView
         RecyclerView roomRecyclerView = findViewById(R.id.roomRecyclerView);
         roomList = new ArrayList<>();
         PopupHandler popupHandler = new PopupHandler(this);
-        roomAdapter = new RoomAdapter(roomList, this, popupHandler, true); // true for isOperator
+
+// Determine the value of isOperator based on RoleEnum
+        boolean isOperator = (userRole == RoleEnum.OPERATOR); // true if OPERATORzz, false if END_USER
+
+// Pass the correct isOperator value
+        roomAdapter = new RoomAdapter(roomList, this, popupHandler, isOperator);
         roomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomRecyclerView.setAdapter(roomAdapter);
+
 
         // Profile Button
         ImageButton profileButton = findViewById(R.id.profile_button);
@@ -79,11 +94,16 @@ public class OperatorActivity extends AppCompatActivity {
 
         // Add Room Button
         ImageButton plusButton = findViewById(R.id.plus_button);
-        plusButton.setOnClickListener(v -> showNewRoomPopup());
+        if (userRole == RoleEnum.END_USER) {
+            plusButton.setVisibility(View.GONE); // Hide for END_USER
+        } else {
+            plusButton.setOnClickListener(v -> showNewRoomPopup());
+        }
 
         // Initialize room data
         fetchRoomsFromBackend();
     }
+
 
     private void fetchRoomsFromBackend() {
         ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);

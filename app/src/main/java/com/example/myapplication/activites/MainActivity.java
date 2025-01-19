@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Redirect based on role
         if ("END_USER".equalsIgnoreCase(role)) {
-            Intent intent = new Intent(MainActivity.this, EndUserActivity.class);
+            Intent intent = new Intent(MainActivity.this, OperatorActivity.class);
             startActivity(intent);
             finish();
         } else if ("OPERATOR".equalsIgnoreCase(role)) {

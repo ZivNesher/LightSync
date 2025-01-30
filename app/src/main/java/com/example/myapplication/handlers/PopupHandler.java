@@ -160,7 +160,6 @@ public class PopupHandler {
                 @Override
                 public void onOk(AmbilWarnaDialog dialog, int color) {
                     lightbulb.setColor(color);
-                    Toast.makeText(context, "Color updated!", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

@@ -92,4 +92,8 @@ public class LightbulbAdapter extends RecyclerView.Adapter<LightbulbAdapter.Ligh
             settingsButton = itemView.findViewById(R.id.lightbulb_settings_button);
         }
     }
+    public Room getRoom() {
+        return room;
+    }
+
 }

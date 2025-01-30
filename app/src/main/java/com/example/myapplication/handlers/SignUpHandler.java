@@ -56,7 +56,7 @@ public class SignUpHandler {
             // Create the NewUserBoundary object for the request
             NewUserBoundary newUser = new NewUserBoundary();
             newUser.setEmail(email);
-            newUser.setRole("END_USER");
+            newUser.setRole("OPERATOR");
             newUser.setUsername(username);
             newUser.setAvatar(avatar);
 

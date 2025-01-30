@@ -40,4 +40,14 @@
         android:backgroundTint="@color/Amber"
         android:textColor="@android:color/white"
         android:layout_marginTop="8dp" />
+    <Button
+        android:id="@+id/close_popup_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:backgroundTint="#FF0000"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp" />
+
+
 </LinearLayout>

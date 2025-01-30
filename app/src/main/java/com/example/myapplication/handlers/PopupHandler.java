@@ -45,45 +45,35 @@ public class PopupHandler {
         LightbulbAdapter adapter = new LightbulbAdapter(lightbulbs, context, this, isOperator, room);
         lightbulbRecyclerView.setAdapter(adapter);
 
+        // Create AlertDialog and store reference
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(popupView)
+                .setCancelable(true)
+                .create();
+
         // Add Lightbulb button
         Button addLightbulbButton = popupView.findViewById(R.id.add_lightbulb_button);
-
-        // Role-based logic for button visibility
         if (!isOperator) {
             // Hide the button for END_USER
             Log.d("PopupHandler", "Hiding Add Lightbulb Button for END_USER");
             addLightbulbButton.setVisibility(View.GONE);
-        } else if ( isOperator == true) {
+        } else {
             // Show the button for OPERATOR
             Log.d("PopupHandler", "Showing Add Lightbulb Button for OPERATOR");
             addLightbulbButton.setVisibility(View.VISIBLE);
             addLightbulbButton.setOnClickListener(v -> showAddLightbulbPopup(lightbulbs, adapter, room));
-        } else {
-            // Default case: Hide the button
-            Log.d("PopupHandler", "Default Case - Hiding Add Lightbulb Button");
-            addLightbulbButton.setVisibility(View.GONE);
         }
 
-        // Close button
+        // Close button (Fix: Correctly dismissing the dialog)
         Button closeButton = popupView.findViewById(R.id.close_popup_button);
         closeButton.setOnClickListener(v -> {
-            // Dismiss the popup when the close button is clicked
-            AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setView(popupView)
-                    .setCancelable(true)
-                    .create();
-            dialog.dismiss();
+            Log.d("PopupHandler", "Closing Room Popup");
+            dialog.dismiss(); // Correctly closes the popup
         });
 
         // Show the popup
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setView(popupView)
-                .setCancelable(true);
-        builder.create().show();
+        dialog.show();
     }
-
-
-
 
     private void showAddLightbulbPopup(ArrayList<Lightbulb> lightbulbs, LightbulbAdapter adapter, Room room) {
         View addPopupView = LayoutInflater.from(context).inflate(R.layout.add_lightbulb_popup, null);
@@ -96,7 +86,11 @@ public class PopupHandler {
                 .setCancelable(false)
                 .create();
 
-        cancelButton.setOnClickListener(v -> dialog.dismiss());
+        // Fix: Properly closing the add lightbulb popup
+        cancelButton.setOnClickListener(v -> {
+            Log.d("PopupHandler", "Closing Add Lightbulb Popup");
+            dialog.dismiss();
+        });
 
         addButton.setOnClickListener(v -> {
             String name = lightbulbNameEditText.getText().toString().trim();
@@ -112,11 +106,11 @@ public class PopupHandler {
 
             // Update room in backend
             if (context instanceof OperatorActivity) {
-                ((OperatorActivity) context).updateRoomInBackend(room, lightbulbs); // Pass room and updated lightbulbs
+                ((OperatorActivity) context).updateRoomInBackend(room, lightbulbs);
             }
 
             Toast.makeText(context, "Lightbulb added: " + name, Toast.LENGTH_SHORT).show();
-            dialog.dismiss();
+            dialog.dismiss(); // Correctly closing the popup
         });
 
         dialog.show();
@@ -128,17 +122,29 @@ public class PopupHandler {
         SeekBar brightnessSeekBar = settingsView.findViewById(R.id.brightness_seekbar);
         Button colorPickerButton = settingsView.findViewById(R.id.color_picker_button);
         Button deleteButton = settingsView.findViewById(R.id.delete_button);
+        Button saveButton = settingsView.findViewById(R.id.save_button);
+        Button closeButton = settingsView.findViewById(R.id.close_popup_button);
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(settingsView)
+                .setCancelable(true)
+                .create();
+
         if (userRole.equals("END_USER")) {
             deleteButton.setVisibility(View.GONE);
         }
-        Button saveButton = settingsView.findViewById(R.id.save_button);
 
-        // Initialize SeekBar
+        // Store original brightness in case user cancels
+        final int[] originalBrightness = {lightbulb.getBrightness()};
+
+        // Initialize SeekBar with current brightness
         brightnessSeekBar.setProgress(lightbulb.getBrightness());
         brightnessSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                lightbulb.setBrightness(progress);
+                if (fromUser) {
+                    lightbulb.setBrightness(progress);
+                }
             }
 
             @Override
@@ -153,38 +159,45 @@ public class PopupHandler {
             AmbilWarnaDialog colorPickerDialog = new AmbilWarnaDialog(context, lightbulb.getColor(), new AmbilWarnaDialog.OnAmbilWarnaListener() {
                 @Override
                 public void onOk(AmbilWarnaDialog dialog, int color) {
-                    lightbulb.setColor(color); // Save the selected color
+                    lightbulb.setColor(color);
                     Toast.makeText(context, "Color updated!", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void onCancel(AmbilWarnaDialog dialog) {
-                    // No action needed
-                }
+                public void onCancel(AmbilWarnaDialog dialog) {}
             });
             colorPickerDialog.show();
         });
 
         // Delete button (only for operators)
-        if (isOperator&&userRole.equals("OPERATOR")) {
+        if (isOperator && userRole.equals("OPERATOR")) {
             deleteButton.setVisibility(View.VISIBLE);
             deleteButton.setOnClickListener(v -> {
                 adapter.getLightbulbs().remove(position);
                 adapter.notifyItemRemoved(position);
                 Toast.makeText(context, "Lightbulb deleted", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             });
         } else {
             deleteButton.setVisibility(View.GONE);
         }
 
-        // Save button
+        // **Save button should update the DB**
         saveButton.setOnClickListener(v -> {
-            Toast.makeText(context, "Settings saved!", Toast.LENGTH_SHORT).show();
+            if (context instanceof OperatorActivity) {
+                ((OperatorActivity) context).saveRoomToBackend(adapter.getRoom());
+                Toast.makeText(context, "Settings saved!", Toast.LENGTH_SHORT).show();
+            }
+            dialog.dismiss();
         });
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setView(settingsView)
-                .setCancelable(true);
-        builder.create().show();
+        // **Fix: Close button restores original brightness if not saved**
+        closeButton.setOnClickListener(v -> {
+            lightbulb.setBrightness(originalBrightness[0]); // Reset to original
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
+
 }

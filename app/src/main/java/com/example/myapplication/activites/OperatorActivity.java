@@ -205,22 +205,14 @@ public class OperatorActivity extends AppCompatActivity {
 
 
     private void showNewRoomPopup() {
-        // Inflate the popup layout for creating a new room
         View popupView = LayoutInflater.from(this).inflate(R.layout.new_room_popup, null);
         EditText newRoomNameEditText = popupView.findViewById(R.id.new_room_name);
         Button cancelButton = popupView.findViewById(R.id.cancel_button);
         Button createButton = popupView.findViewById(R.id.create_button);
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(popupView).setCancelable(false).create();
 
-        // Create an AlertDialog for the popup
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(popupView)
-                .setCancelable(false)
-                .create();
-
-        // Cancel button listener
         cancelButton.setOnClickListener(v -> dialog.dismiss());
 
-        // Create button listener
         createButton.setOnClickListener(v -> {
             String roomName = newRoomNameEditText.getText().toString().trim();
             if (roomName.isEmpty()) {
@@ -229,61 +221,31 @@ public class OperatorActivity extends AppCompatActivity {
             }
 
             ObjectBoundary newRoom = new ObjectBoundary();
-            CreatedBy createdBy = new CreatedBy(); // Use the standalone CreatedBy class
-            UserId userId = new UserId(); // Use the standalone UserId class
-
-// Set the user ID details
-            userId.setSystemID(systemID); // Replace with the correct system ID
-            userId.setEmail(userEmail); // Replace with the correct user email
-
-// Set the CreatedBy object
+            CreatedBy createdBy = new CreatedBy();
+            UserId userId = new UserId();
+            userId.setSystemID(systemID);
+            userId.setEmail(userEmail);
             createdBy.setUserId(userId);
-
-// Set the other ObjectBoundary details
             newRoom.setAlias(roomName);
             newRoom.setType("Room");
             newRoom.setStatus("Active");
             newRoom.setActive(true);
             newRoom.setCreatedBy(createdBy);
+            newRoom.setLocation(new ObjectBoundary.Location());
 
-// Set default location
-            ObjectBoundary.Location location = new ObjectBoundary.Location();
-            location.setLat(0.0);
-            location.setLng(0.0);
-            newRoom.setLocation(location);
-
-// Set empty objectDetails
-            newRoom.setObjectDetails(new HashMap<>());
-
-
-            // Make the API call to create the room
             ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
-            Gson gson = new Gson();
-            String jsonRequest = gson.toJson(newRoom);
-            Log.d("CreateRoomRequest", jsonRequest);
-
             apiService.createRoom(newRoom).enqueue(new Callback<ObjectBoundary>() {
                 @Override
                 public void onResponse(Call<ObjectBoundary> call, Response<ObjectBoundary> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        // Successfully created room
                         Room room = new Room(response.body().getAlias(), response.body().isActive());
+                        room.setId(response.body().getObjectId().getId());
                         roomList.add(room);
                         roomAdapter.notifyItemInserted(roomList.size() - 1);
+                        fetchRoomsFromBackend();
                         Toast.makeText(OperatorActivity.this, "Room created: " + response.body().getAlias(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Log the error response for debugging
-                        try {
-                            String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                            Log.e("API Error", "Failed to create room: " + errorBody);
-                            Toast.makeText(OperatorActivity.this, "Failed to create room: " + errorBody, Toast.LENGTH_LONG).show();
-                        } catch (Exception e) {
-                            Log.e("API Error", "Error reading errorBody", e);
-                            Toast.makeText(OperatorActivity.this, "Failed to create room: Unable to parse error", Toast.LENGTH_SHORT).show();
-                        }
                     }
                 }
-
 
                 @Override
                 public void onFailure(Call<ObjectBoundary> call, Throwable t) {
@@ -294,7 +256,6 @@ public class OperatorActivity extends AppCompatActivity {
             dialog.dismiss();
         });
 
-        // Show the popup dialog
         dialog.show();
     }
 
@@ -309,48 +270,27 @@ public class OperatorActivity extends AppCompatActivity {
         roomBoundary.setType("Room");
         roomBoundary.setActive(room.isActive());
 
-        // Add lightbulbs to objectDetails
         Map<String, Object> objectDetails = new HashMap<>();
         objectDetails.put("lightbulbs", room.getSerializedLightbulbs());
         roomBoundary.setObjectDetails(objectDetails);
 
-        // Log the payload for debugging
-        Gson gson = new Gson();
-        String jsonPayload = gson.toJson(roomBoundary);
-        Log.d("UpdateRoomPayload", jsonPayload);
-
-        // Make the API call
         ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
-        apiService.updateObject(
-                systemID, // systemId
-                room.getId(),                  // Use the system-generated ID
-                systemID, // userSystemId
-                userEmail,                      // userEmail
-                roomBoundary
-        ).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(OperatorActivity.this, "Room updated successfully!", Toast.LENGTH_SHORT).show();
-                } else {
-                    try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                        Log.e("API Error", "Failed to update room: " + errorBody);
-                        Toast.makeText(OperatorActivity.this, "Failed to update room: " + errorBody, Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Log.e("API Error", "Error reading errorBody", e);
-                        Toast.makeText(OperatorActivity.this, "Failed to update room: Unable to parse error", Toast.LENGTH_SHORT).show();
+        apiService.updateObject(systemID, room.getId(), systemID, userEmail, roomBoundary)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(OperatorActivity.this, "Room updated successfully!", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("API Error", "Failed to update room", t);
-                Toast.makeText(OperatorActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(OperatorActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
+
     private void toggleAllLights(boolean turnOn) {
         for (Room room : roomList) {
             // Update the state of all lightbulbs in the room

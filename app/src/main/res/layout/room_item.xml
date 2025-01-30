@@ -35,6 +35,11 @@
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
+        <Switch
+            android:id="@+id/room_light_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
 
         <!-- Navigate Button (optional, if needed for a specific action) -->
         <ImageButton

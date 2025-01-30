@@ -5,13 +5,17 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activites.OperatorActivity;
 import com.example.myapplication.data.RoleEnum;
 import com.example.myapplication.handlers.PopupHandler;
+import com.example.myapplication.models.Lightbulb;
 import com.example.myapplication.models.Room;
 import com.google.android.material.textview.MaterialTextView;
 
@@ -53,8 +57,22 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         Room room = rooms.get(position);
         holder.roomNameTextView.setText(room.getName());
 
+        // Initialize switch state based on lightbulb states
+        boolean allLightsOn = areAllLightsOn(room);
+        holder.roomLightSwitch.setChecked(allLightsOn);
+
+        // Allow switch toggle only for operators
+        holder.roomLightSwitch.setEnabled(isOperator);
+
+        // Handle switch toggle
+        holder.roomLightSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!buttonView.isPressed()) return; // Prevent unwanted triggers during UI refresh
+
+            toggleRoomLights(room, isChecked);
+        });
+
         // Open lightbulb management popup
-        holder.itemView.setOnClickListener(v -> popupHandler.showRoomPopup(room, isOperator,userRole));
+        holder.itemView.setOnClickListener(v -> popupHandler.showRoomPopup(room, isOperator, userRole));
     }
 
     @Override
@@ -64,10 +82,41 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     public static class RoomViewHolder extends RecyclerView.ViewHolder {
         MaterialTextView roomNameTextView;
+        Switch roomLightSwitch;
 
         public RoomViewHolder(@NonNull View itemView) {
             super(itemView);
             roomNameTextView = itemView.findViewById(R.id.roomNameTextView);
+            roomLightSwitch = itemView.findViewById(R.id.room_light_switch);
         }
+    }
+
+    /**
+     * Checks if all lights in the room are ON.
+     */
+    private boolean areAllLightsOn(Room room) {
+        for (Lightbulb lightbulb : room.getLightbulbs()) {
+            if (!lightbulb.isOn()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Toggles all lights in the room and updates the backend.
+     */
+    private void toggleRoomLights(Room room, boolean turnOn) {
+        for (Lightbulb lightbulb : room.getLightbulbs()) {
+            lightbulb.setOn(turnOn);
+        }
+
+        // Update the backend with the new state
+        if (context instanceof OperatorActivity) {
+            ((OperatorActivity) context).saveRoomToBackend(room);
+        }
+
+        // Refresh UI
+        notifyDataSetChanged();
     }
 }

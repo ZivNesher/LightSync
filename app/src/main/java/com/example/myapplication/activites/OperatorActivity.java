@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -77,10 +80,10 @@ public class OperatorActivity extends AppCompatActivity {
         roomList = new ArrayList<>();
         PopupHandler popupHandler = new PopupHandler(this);
 
-        // Determine the value of isOperator based on RoleEnum
+        // Determine if user is an operator
         boolean isOperator = (userRole == RoleEnum.OPERATOR);
 
-        // Pass the correct isOperator value
+        // Setup Room Adapter
         roomAdapter = new RoomAdapter(roomList, this, popupHandler, isOperator);
         roomRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         roomRecyclerView.setAdapter(roomAdapter);
@@ -104,16 +107,100 @@ public class OperatorActivity extends AppCompatActivity {
         Switch lightbulbSwitch = findViewById(R.id.main_switch);
         lightbulbSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                // Turn all lights ON
                 toggleAllLights(true);
             } else {
-                // Turn all lights OFF
                 toggleAllLights(false);
             }
         });
 
+        // 🌟 Add the Spinner (Dropdown)
+        setupRoomActionsSpinner();
+
         // Initialize room data
         fetchRoomsFromBackend();
+    }
+
+    private void setupRoomActionsSpinner() {
+        Spinner actionSpinner = findViewById(R.id.room_action_spinner);
+
+        // Define options
+        String[] actions = {
+                "Select Action",
+                "Change all lights to blue",
+                "Turn on only the first 2 rooms",
+                "Make a party lights"
+        };
+
+        // Set up adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, actions);
+        actionSpinner.setAdapter(adapter);
+
+        // Handle selection
+        actionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 1: // Change all lights to blue
+                        changeAllLightsToColor(0x0000FF); // Blue color
+                        break;
+                    case 2: // Turn on only the first 2 rooms
+                        turnOnFirstTwoRooms();
+                        break;
+                    case 3: // Make a party lights mode
+                        startPartyMode();
+                        break;
+                    default:
+                        // Do nothing if "Select Action" is chosen
+                        break;
+                }
+                // Reset dropdown selection to "Select Action" after applying action
+                actionSpinner.setSelection(0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+    private void changeAllLightsToColor(int color) {
+        for (Room room : roomList) {
+            for (Lightbulb lightbulb : room.getLightbulbs()) {
+                lightbulb.setColor(color);
+            }
+            saveRoomToBackend(room);
+        }
+        roomAdapter.notifyDataSetChanged();
+        Toast.makeText(this, "All lights changed to blue!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void turnOnFirstTwoRooms() {
+        int count = 0;
+        for (Room room : roomList) {
+            if (count < 2) {
+                for (Lightbulb lightbulb : room.getLightbulbs()) {
+                    lightbulb.setOn(true);
+                }
+                saveRoomToBackend(room);
+                count++;
+            }
+        }
+        roomAdapter.notifyDataSetChanged();
+        Toast.makeText(this, "First two rooms' lights turned on!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void startPartyMode() {
+        for (Room room : roomList) {
+            for (Lightbulb lightbulb : room.getLightbulbs()) {
+                int randomColor = (int)(Math.random() * 0xFFFFFF); // Generate random color
+                lightbulb.setColor(randomColor);
+                lightbulb.setBrightness(100);
+                lightbulb.setOn(true);
+            }
+            saveRoomToBackend(room);
+        }
+        roomAdapter.notifyDataSetChanged();
+        Toast.makeText(this, "Party mode activated!", Toast.LENGTH_SHORT).show();
     }
 
 

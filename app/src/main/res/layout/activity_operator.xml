@@ -53,12 +53,18 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="Rooms List"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:padding="8dp"
                     android:gravity="left" />
+                <Spinner
+                    android:id="@+id/room_action_spinner"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"/>
                 <Switch
                     android:id="@+id/main_switch"
                     android:layout_width="0dp"
